@@ -49,7 +49,8 @@ def render() -> None:
     for fila_inicio in range(0, len(visibles), 3):
         fila = visibles[fila_inicio:fila_inicio + 3]
         columnas = st.columns(3)
-        for columna, imagen in zip(columnas, fila):
+        for desplazamiento, (columna, imagen) in enumerate(zip(columnas, fila)):
+            posicion = fila_inicio + desplazamiento
             with columna, st.container(border=True):
                 st.image(imagen.png_bytes, use_container_width=True)
                 st.markdown(f"**{imagen.prompt_usuario[:70]}**")
@@ -62,7 +63,12 @@ def render() -> None:
                     data=imagen.png_bytes,
                     file_name=imagen.nombre_fichero,
                     mime="image/png",
-                    key=f"dl_{imagen.id}_{fila_inicio}",
+                    # La clave combina el identificador único de la pieza con su
+                    # posición en la vista filtrada. Cualquiera de los dos
+                    # bastaría; se usan ambos porque Streamlit aborta la página
+                    # entera ante una clave repetida, y el coste de la
+                    # redundancia es nulo.
+                    key=f"dl_{imagen.id}_{posicion}",
                     use_container_width=True,
                 )
                 with st.expander("Procedencia"):

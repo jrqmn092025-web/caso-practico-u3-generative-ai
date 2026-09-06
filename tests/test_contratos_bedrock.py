@@ -238,6 +238,50 @@ def test_prompt_legitimo_pasa() -> None:
     assert resultado.permitido, "La moderación no debe bloquear peticiones normales."
 
 
+def test_identificadores_de_imagen_son_unicos() -> None:
+    """Dos generaciones distintas nunca comparten identificador.
+
+    Regresión de un fallo real: el identificador se derivaba del contenido
+    (semilla y estilo), de modo que dos piezas con distinto prompt pero igual
+    semilla —el caso habitual, porque la semilla se mantiene entre
+    generaciones— recibían el mismo valor. La galería construye con él la clave
+    de sus botones de descarga, y Streamlit aborta la página completa ante una
+    clave repetida.
+    """
+    servicio = ImageService(_cliente())
+    piezas = [
+        servicio.generar("terraza al atardecer", estilo_clave="realismo", seed=42),
+        servicio.generar("bodegón de frutas", estilo_clave="realismo", seed=42),
+        servicio.generar("terraza al atardecer", estilo_clave="realismo", seed=42),
+    ]
+    identificadores = [p.id for p in piezas]
+    assert len(set(identificadores)) == len(identificadores), (
+        f"Identificadores repetidos: {identificadores}"
+    )
+
+    # La reproducibilidad por semilla debe seguir intacta: cambia la identidad
+    # de la pieza, no el contenido que produce el modelo.
+    assert piezas[0].png_bytes == piezas[2].png_bytes
+
+
+def test_claves_de_galeria_no_colisionan() -> None:
+    """Reproduce la construcción de claves de la galería sobre un caso adverso."""
+    servicio = ImageService(_cliente())
+    galeria = [
+        servicio.generar(prompt, estilo_clave="realismo", seed=42)
+        for prompt in ("primera pieza", "segunda pieza", "tercera pieza",
+                       "cuarta pieza", "quinta pieza")
+    ]
+
+    claves = []
+    for fila_inicio in range(0, len(galeria), 3):
+        fila = galeria[fila_inicio:fila_inicio + 3]
+        for desplazamiento, imagen in enumerate(fila):
+            claves.append(f"dl_{imagen.id}_{fila_inicio + desplazamiento}")
+
+    assert len(set(claves)) == len(claves), f"Claves repetidas en la galería: {claves}"
+
+
 def test_servicio_de_imagen_propaga_el_bloqueo() -> None:
     servicio = ImageService(_cliente())
     try:

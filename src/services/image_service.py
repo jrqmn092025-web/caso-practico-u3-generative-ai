@@ -23,6 +23,14 @@ from src.services.text_service import ContenidoBloqueado
 class ImagenGenerada:
     """Una imagen del catálogo, con su procedencia completa."""
 
+    # Identificador único de esta pieza concreta.
+    #
+    # Se genera de forma aleatoria y NO se deriva del contenido. Derivarlo del
+    # prompt, el estilo o la semilla sería un error: dos generaciones distintas
+    # pueden compartir legítimamente semilla y estilo —de hecho es lo habitual,
+    # porque la semilla por defecto se mantiene entre generaciones— y acabarían
+    # con el mismo identificador. La galería necesita distinguir piezas, no
+    # agrupar las que se parecen.
     id: str
     png_bytes: bytes
     prompt_usuario: str
@@ -95,7 +103,7 @@ class ImageService:
         )
 
         return ImagenGenerada(
-            id=f"img_{resultado.seed}_{estilo.clave}",
+            id=f"img_{secrets.token_hex(6)}",
             png_bytes=resultado.png_bytes,
             prompt_usuario=prompt.strip(),
             prompt_enviado=f"{prompt_seguro}, {estilo.prompt_suffix}",
