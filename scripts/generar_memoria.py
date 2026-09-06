@@ -2,10 +2,10 @@
 
     python scripts/generar_memoria.py
 
-Decisión deliberada: la tabla de modelos y parámetros y el texto del system
-prompt **se leen del código fuente**, no se transcriben. Así el documento no
-puede afirmar una temperatura que la aplicación no aplique. Si alguien cambia
-`src/bedrock/models.py`, este documento cambia con él en la siguiente
+La tabla de modelos y parámetros y el texto de las instrucciones de sistema se
+leen del código fuente en lugar de transcribirse. De este modo el documento no
+puede afirmar un valor de temperatura que la aplicación no aplique: toda
+modificación de `src/bedrock/models.py` se propaga al documento en la siguiente
 generación.
 """
 from __future__ import annotations
@@ -199,7 +199,8 @@ def indice(doc):
     fld_sep = OxmlElement("w:fldChar")
     fld_sep.set(qn("w:fldCharType"), "separate")
     texto = OxmlElement("w:t")
-    texto.text = "Pulsa aquí con el botón derecho y elige «Actualizar campos» para generar el índice."
+    texto.text = ("Para generar el índice: clic derecho sobre esta línea y "
+                  "seleccionar «Actualizar campos».")
     fld_end = OxmlElement("w:fldChar")
     fld_end.set(qn("w:fldCharType"), "end")
 
@@ -269,10 +270,10 @@ def portada(doc):
     parrafo(doc, AUTOR, negrita=True, tamano=14,
             alineacion=WD_ALIGN_PARAGRAPH.CENTER, espacio_despues=24)
 
-    parrafo(doc, "Aplicación entregada:  Aurora Studio", tamano=10, color=GRIS,
+    parrafo(doc, "Aplicación desarrollada:  Aurora Studio", tamano=10, color=GRIS,
             alineacion=WD_ALIGN_PARAGRAPH.CENTER, espacio_despues=2)
-    parrafo(doc, "Modo de ejecución:  simulado (sin cuenta AWS)", tamano=10,
-            color=GRIS, alineacion=WD_ALIGN_PARAGRAPH.CENTER)
+    parrafo(doc, "Modo de ejecución:  simulado (sin cuenta de Amazon Web Services)",
+            tamano=10, color=GRIS, alineacion=WD_ALIGN_PARAGRAPH.CENTER)
 
     doc.add_page_break()
 
@@ -287,39 +288,49 @@ def seccion_1(doc):
     doc.add_heading("Introducción y alcance", level=1)
 
     parrafo(doc,
-            "Este documento recoge el diseño de Aurora Studio, una herramienta interna "
-            "de generación de imágenes y edición de contenido para una agencia de "
-            "marketing y publicidad, construida sobre Amazon Bedrock. Cubre las seis "
-            "secciones del tronco común exigido por la guía del trabajo práctico (3.1 a "
-            "3.6) y documenta además la ejecución de la Vía A, es decir, la aplicación "
-            "funcional que acompaña a esta memoria.")
+            "El presente documento expone el diseño y la implementación de Aurora "
+            "Studio, una herramienta interna de generación de imágenes y edición de "
+            "contenido concebida para una agencia de marketing y publicidad, "
+            "construida sobre Amazon Bedrock. Se desarrollan las seis secciones del "
+            "tronco común establecidas en la guía del trabajo práctico (apartados 3.1 "
+            "a 3.6) y se documenta la ejecución de la Vía A, correspondiente a la "
+            "aplicación funcional que acompaña a esta memoria.")
 
     parrafo(doc,
-            "La aplicación cubre las cuatro funcionalidades que pide el enunciado: "
-            "generación de imágenes a partir de texto con selección de estilo y galería; "
-            "edición de contenido con cuatro operaciones e historial de versiones; "
-            "colaboración con roles, permisos y comentarios; y un marco de ética y "
-            "seguridad aplicado en el propio flujo de ejecución, no solo enunciado.")
-
-    doc.add_heading("Un aviso de honestidad sobre el modo de ejecución", level=2)
+            "La solución cubre las cuatro funcionalidades requeridas en el enunciado: "
+            "generación de imágenes a partir de descripciones textuales con selección "
+            "de estilo y galería de resultados; edición de contenido mediante cuatro "
+            "operaciones diferenciadas con historial de versiones; colaboración "
+            "multiusuario con roles, permisos y comentarios; y un marco de ética y "
+            "seguridad implementado en el propio flujo de ejecución.")
 
     parrafo(doc,
-            "La aplicación se entrega ejecutándose en modo simulado: no se ha "
-            "contratado una cuenta de AWS y, por tanto, ninguna de las respuestas que "
-            "muestran las capturas procede realmente de Amazon Bedrock. La guía del "
-            "trabajo contempla expresamente esta posibilidad y no la penaliza, pero "
-            "exige que la integración esté bien planteada. Esa exigencia es la que ha "
-            "gobernado la decisión de arquitectura más importante del proyecto, y se "
-            "explica en el apartado 3.2.")
+            "La estructura del documento responde al orden establecido en la guía. "
+            "Tras esta introducción se desarrolla el tronco común, se detalla la "
+            "ejecución de la vía elegida, se enumeran las limitaciones identificadas y "
+            "se incluye una autoevaluación frente a los criterios de la rúbrica.")
+
+    doc.add_heading("Consideración preliminar sobre el modo de ejecución", level=2)
+
+    parrafo(doc,
+            "La aplicación se entrega ejecutándose en modo simulado. No se ha "
+            "contratado una cuenta de Amazon Web Services y, en consecuencia, ninguna "
+            "de las respuestas que muestra la interfaz procede de los modelos alojados "
+            "en Amazon Bedrock. La guía del trabajo práctico contempla expresamente "
+            "esta posibilidad y no la penaliza, si bien exige que la integración esté "
+            "correctamente planteada. Dicha exigencia ha condicionado la decisión "
+            "arquitectónica principal del proyecto, que se justifica en el apartado "
+            "3.2.")
 
     caja_destacada(
         doc,
-        "En una frase",
-        "El código que construye las peticiones a Bedrock, las envía y procesa sus "
-        "respuestas es código real y se ejecuta íntegro. Lo único simulado es el "
-        "transporte de red. Cambiar la variable BEDROCK_BACKEND de «mock» a «aws» "
-        "hace que la aplicación llame a AWS de verdad sin modificar ninguna otra "
-        "línea.",
+        "Síntesis",
+        "El código responsable de construir las peticiones a Amazon Bedrock, "
+        "enviarlas y procesar sus respuestas es código de producción y se ejecuta en "
+        "su totalidad. La sustitución afecta exclusivamente al transporte de red. La "
+        "modificación de la variable de entorno BEDROCK_BACKEND, de «mock» a «aws», "
+        "habilita las llamadas reales sin requerir cambio alguno en el resto del "
+        "código.",
         "E8F4EC",
     )
 
@@ -328,42 +339,53 @@ def seccion_31(doc):
     doc.add_heading("3.1. Problema y usuarios", level=1)
 
     parrafo(doc,
-            "La agencia produce piezas creativas —combinaciones de imagen y texto— para "
-            "campañas de cliente. El cuello de botella no está en la calidad del equipo, "
-            "sino en el número de vueltas que da cada pieza antes de publicarse: el "
-            "diseñador necesita propuestas visuales para conversar con el cliente, el "
-            "redactor reescribe el mismo texto media docena de veces, y el aprobador "
-            "recibe versiones por correo sin saber qué cambió respecto a la anterior.")
+            "La agencia produce piezas creativas —entendidas como la combinación de "
+            "una imagen y un texto— destinadas a campañas de cliente. El principal "
+            "obstáculo identificado no reside en la capacidad técnica del equipo, sino "
+            "en el número de iteraciones que atraviesa cada pieza antes de su "
+            "publicación. El diseñador requiere propuestas visuales con las que "
+            "articular la conversación con el cliente; el redactor reescribe un mismo "
+            "texto en múltiples ocasiones; y el aprobador recibe sucesivas versiones "
+            "por correo electrónico sin disponer de un mecanismo que le permita "
+            "identificar las diferencias respecto a la versión anterior.")
 
     parrafo(doc,
-            "Aurora Studio ataca las tres fricciones a la vez: acelera la exploración "
-            "visual, asiste la reescritura y conserva la trazabilidad de todo lo que "
-            "pasa por la herramienta.")
+            "Aurora Studio aborda simultáneamente las tres fricciones descritas: "
+            "acelera la exploración visual, asiste el proceso de reescritura y "
+            "preserva la trazabilidad de las operaciones realizadas.")
 
     doc.add_heading("Historias de usuario", level=2)
 
+    parrafo(doc,
+            "Se formulan a continuación las historias de usuario que definen los "
+            "requisitos funcionales de la solución, siguiendo la estructura "
+            "«Como [rol], quiero [acción], para [beneficio]».")
+
     historias = [
         ("Diseñador",
-         "generar imágenes desde una descripción de texto y elegir el estilo",
-         "acelerar mis propuestas visuales sin esperar a una sesión de fotos"),
+         "generar imágenes a partir de una descripción textual y seleccionar el estilo",
+         "acelerar la elaboración de propuestas visuales sin depender de una sesión "
+         "fotográfica"),
         ("Diseñador",
-         "reproducir exactamente una imagen que generé ayer usando su semilla",
-         "poder iterar sobre una propuesta concreta en lugar de volver a empezar"),
+         "reproducir con exactitud una imagen generada previamente mediante su semilla",
+         "iterar sobre una propuesta concreta en lugar de reiniciar el proceso"),
         ("Redactor",
          "resumir, expandir, corregir y generar variaciones de un texto",
-         "publicar más rápido y con un estilo más consistente"),
+         "reducir el tiempo de publicación y mejorar la consistencia estilística"),
         ("Redactor",
-         "que la herramienta aplique la guía de estilo de marca automáticamente",
-         "no tener que recordar de memoria las prohibiciones de estilo"),
+         "que la herramienta aplique automáticamente la guía de estilo de marca",
+         "evitar la dependencia de la memoria en la aplicación de las normas "
+         "editoriales"),
         ("Aprobador",
-         "revisar, comparar y comentar versiones antes de publicar",
-         "controlar la calidad y saber exactamente qué cambió entre dos versiones"),
+         "revisar, comparar y comentar versiones antes de la publicación",
+         "controlar la calidad e identificar con precisión los cambios introducidos"),
         ("Aprobador",
-         "restaurar una versión anterior sin perder el historial",
-         "poder rectificar sin destruir la evidencia de lo que se aprobó"),
+         "restaurar una versión anterior sin pérdida del historial",
+         "rectificar decisiones preservando la evidencia de lo aprobado"),
         ("Responsable legal",
          "conocer el prompt y la semilla de cualquier imagen publicada",
-         "poder acreditar cómo se produjo si un tercero la cuestiona"),
+         "acreditar el proceso de generación ante una eventual reclamación de "
+         "terceros"),
     ]
 
     for rol, accion, beneficio in historias:
@@ -377,28 +399,42 @@ def seccion_31(doc):
             run.bold = negrita
             run.font.size = Pt(11)
 
+    doc.add_heading("Justificación de la cuarta figura de usuario", level=2)
+
     parrafo(doc,
-            "Las tres primeras figuras son las que exige el enunciado. La cuarta —el "
-            "responsable legal— no aparece en él, pero se ha incorporado porque es "
-            "quien realmente impone los requisitos de trazabilidad y de copyright que "
-            "estructuran la sección 3.6. Ignorarlo habría dejado esos controles sin "
-            "un usuario que los reclamara, y por tanto sin justificación funcional.")
+            "Las tres primeras figuras —diseñador, redactor y aprobador— son las "
+            "establecidas en el enunciado del caso. Se ha incorporado una cuarta "
+            "figura, el responsable legal, por una razón de coherencia interna del "
+            "diseño: es el actor que impone los requisitos de trazabilidad, "
+            "conservación de la procedencia y cumplimiento en materia de derechos de "
+            "autor que estructuran el apartado 3.6.")
+
+    parrafo(doc,
+            "La omisión de esta figura habría dejado dichos controles sin un usuario "
+            "que los demandara y, por consiguiente, sin justificación funcional. En la "
+            "práctica profesional, los requisitos de cumplimiento normativo raramente "
+            "proceden de los perfiles productivos, sino de una función de control "
+            "diferenciada. Su inclusión no amplía el alcance funcional de la "
+            "aplicación, sino que fundamenta requisitos que el enunciado exige abordar "
+            "en su apartado de consideraciones éticas y de seguridad.")
 
 
 def seccion_32(doc):
     doc.add_heading("3.2. Arquitectura del sistema", level=1)
 
     parrafo(doc,
-            "El sistema se organiza en cinco capas. La pieza central es el wrapper: la "
-            "capa propia que recibe la petición del usuario, aplica las reglas de "
-            "negocio y de seguridad, decide qué modelo invocar y con qué parámetros, "
-            "llama a Bedrock y procesa la respuesta antes de devolverla.")
+            "El sistema se estructura en cinco capas. El elemento central de la "
+            "arquitectura es el wrapper, entendido como la capa propia de la "
+            "aplicación que recibe la petición del usuario, aplica las reglas de "
+            "negocio y de seguridad, determina qué modelo debe invocarse y con qué "
+            "parámetros, realiza la llamada a Amazon Bedrock y procesa la respuesta "
+            "antes de devolverla a la interfaz.")
 
     diagrama = ASSETS_DIR / "arquitectura.png"
     if diagrama.exists():
         doc.add_picture(str(diagrama), width=Cm(16.5))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-        parrafo(doc, "Figura 1. Arquitectura de Aurora Studio.", tamano=9,
+        parrafo(doc, "Figura 1. Arquitectura del sistema Aurora Studio.", tamano=9,
                 color=GRIS, alineacion=WD_ALIGN_PARAGRAPH.CENTER)
 
     doc.add_heading("Responsabilidad de cada capa", level=2)
@@ -406,88 +442,105 @@ def seccion_32(doc):
     tabla(doc,
           ["Capa", "Responsabilidad", "Implementación"],
           [
-              ["Interfaz", "Cuatro pantallas: generación, edición, colaboración y galería.",
+              ["Interfaz",
+               "Cuatro pantallas: generación de imágenes, edición de contenido, "
+               "colaboración y galería.",
                "Streamlit · src/ui/"],
               ["Wrapper",
-               "Moderación, defensa anti-inyección, construcción de prompts, "
-               "recuperación RAG, perfiles de inferencia, dominio.",
+               "Moderación, defensa frente a inyección de prompt, construcción de "
+               "instrucciones, recuperación de contexto, perfiles de inferencia y "
+               "lógica de dominio.",
                "src/services/, src/security/, src/prompts/, src/domain/"],
               ["Transporte",
-               "Serializa el cuerpo JSON, invoca invoke_model y parsea la respuesta. "
-               "Traduce errores de AWS a mensajes accionables.",
+               "Serialización del cuerpo de la petición, invocación de invoke_model y "
+               "análisis de la respuesta. Traducción de los errores del proveedor a "
+               "mensajes accionables.",
                "src/bedrock/client.py"],
-              ["Modelos", "Claude, Stable Diffusion XL y Titan Embeddings.",
+              ["Modelos",
+               "Claude, Stable Diffusion XL y Titan Embeddings.",
                "Amazon Bedrock"],
               ["Almacenamiento",
-               "Galería con procedencia, historial de versiones solo-anexado, "
-               "índice vectorial de la guía de marca.",
+               "Galería con metadatos de procedencia, historial de versiones de tipo "
+               "solo-anexado e índice vectorial de la guía de marca.",
                "Estado de sesión · data/"],
           ],
           anchos=[2.6, 8.0, 5.4])
 
-    doc.add_heading("Justificación: API gestionada frente a modelo propio", level=2)
+    doc.add_heading("Justificación de la API gestionada frente al despliegue propio",
+                    level=2)
 
     parrafo(doc,
-            "La alternativa a Bedrock sería desplegar Stable Diffusion y un modelo de "
-            "lenguaje abierto en infraestructura propia. Se ha descartado por tres "
-            "razones, en este orden de peso:")
+            "La alternativa a Amazon Bedrock consistiría en desplegar Stable Diffusion "
+            "y un modelo de lenguaje de código abierto sobre infraestructura propia. "
+            "Dicha alternativa se ha descartado atendiendo a tres criterios, ordenados "
+            "según su peso en la decisión.")
 
     vineta_rica(doc, [
-        ("Tiempo de arranque. ", True),
-        ("Con Bedrock, la primera llamada funciona el mismo día en que se concede el "
-         "acceso al modelo. Con infraestructura propia haría falta aprovisionar "
-         "instancias con GPU, instalar los pesos, montar el servicio de inferencia y "
-         "resolver el escalado. Para una herramienta interna cuyo valor está en el "
-         "flujo de trabajo, no en la inferencia, ese esfuerzo no se recupera.", False),
+        ("Tiempo de puesta en marcha. ", True),
+        ("Mediante Amazon Bedrock, la primera invocación resulta operativa el mismo "
+         "día en que se concede el acceso a los modelos. Un despliegue propio "
+         "requeriría aprovisionar instancias con unidades de procesamiento gráfico, "
+         "instalar los pesos de los modelos, configurar el servicio de inferencia y "
+         "resolver el escalado. Tratándose de una herramienta interna cuyo valor "
+         "reside en el flujo de trabajo y no en la inferencia, dicho esfuerzo no "
+         "resulta amortizable.", False),
     ])
     vineta_rica(doc, [
         ("Coste operativo. ", True),
-        ("El modelo por uso encaja con un patrón de demanda irregular: los picos "
-         "coinciden con los cierres de campaña y hay días de actividad casi nula. Una "
-         "GPU reservada se paga esté o no trabajando. La agencia no tiene, además, un "
-         "equipo de plataforma que mantenga ese despliegue.", False),
+        ("El modelo de facturación por uso se ajusta a un patrón de demanda irregular, "
+         "caracterizado por picos coincidentes con los cierres de campaña y periodos "
+         "de actividad reducida. Una unidad de procesamiento gráfico reservada genera "
+         "coste con independencia de su utilización efectiva. Adicionalmente, la "
+         "agencia no dispone de un equipo de plataforma que asuma el mantenimiento de "
+         "dicho despliegue.", False),
     ])
     vineta_rica(doc, [
-        ("Acceso a varios modelos por una sola API. ", True),
-        ("El caso necesita tres familias distintas —lenguaje, difusión y embeddings— de "
-         "tres proveedores distintos. Bedrock las expone con una única interfaz y un "
-         "único mecanismo de credenciales.", False),
+        ("Acceso unificado a múltiples modelos. ", True),
+        ("El caso requiere tres familias de modelos —lenguaje, difusión y "
+         "representaciones vectoriales— procedentes de tres proveedores distintos. "
+         "Amazon Bedrock las expone a través de una interfaz única y un mecanismo "
+         "común de gestión de credenciales.", False),
     ])
 
     parrafo(doc,
-            "La contrapartida se asume de forma consciente: dependencia de un "
-            "proveedor, menor control sobre las versiones de los modelos y coste "
-            "marginal creciente si el volumen se disparara. El punto en el que "
-            "convendría reconsiderar la decisión es identificable: un volumen sostenido "
-            "y predecible que amortice una GPU reservada, o un requisito regulatorio "
-            "que impida que el contenido salga de la propia infraestructura.")
+            "Las contrapartidas de esta decisión se asumen de forma explícita: "
+            "dependencia de un proveedor único, menor control sobre las versiones de "
+            "los modelos y crecimiento del coste marginal ante un incremento "
+            "sostenido del volumen. Cabe identificar asimismo las condiciones bajo las "
+            "cuales convendría reconsiderar la decisión: un volumen sostenido y "
+            "predecible que permitiera amortizar infraestructura reservada, o un "
+            "requisito regulatorio que impidiera la salida del contenido de la "
+            "infraestructura propia.")
 
-    doc.add_heading("La decisión estructural: dónde se simula", level=2)
-
-    parrafo(doc,
-            "Al no disponer de cuenta AWS, había que decidir en qué punto sustituir la "
-            "llamada real. La opción evidente —una bifurcación en la lógica de negocio— "
-            "se descartó porque deja el código de integración sin ejercitar: se "
-            "escribe, pero nunca se comprueba que su forma sea correcta.")
+    doc.add_heading("Decisión estructural: la frontera de simulación", level=2)
 
     parrafo(doc,
-            "La solución adoptada sustituye el objeto de transporte, no la lógica. "
-            "MockBedrockRuntime expone la misma operación invoke_model que el cliente "
-            "de boto3, recibe exactamente el mismo cuerpo JSON que se enviaría a AWS y "
-            "devuelve una respuesta con la misma estructura de sobre. En consecuencia, "
-            "todo el código de la aplicación es código de producción: construye los "
-            "payloads reales, los serializa igual y parsea las respuestas por el mismo "
-            "camino.")
+            "La ausencia de una cuenta de Amazon Web Services obligaba a determinar en "
+            "qué punto del sistema debía sustituirse la llamada real. La opción más "
+            "inmediata —una bifurcación condicional en la lógica de negocio— fue "
+            "descartada por cuanto deja el código de integración sin ejercitar: se "
+            "escribe, pero no se verifica la corrección de su forma.")
+
+    parrafo(doc,
+            "La solución adoptada sustituye el objeto de transporte y no la lógica de "
+            "la aplicación. La clase MockBedrockRuntime expone la misma operación "
+            "invoke_model que el cliente de boto3, recibe el mismo cuerpo en formato "
+            "JSON que se enviaría al proveedor y devuelve una respuesta con idéntica "
+            "estructura. En consecuencia, la totalidad del código de la aplicación es "
+            "código de producción: construye las peticiones reales, las serializa del "
+            "mismo modo y analiza las respuestas siguiendo el mismo camino de "
+            "ejecución.")
 
     caja_destacada(
         doc,
         "Consecuencia verificable",
-        "El sustituto valida cada payload que recibe contra el contrato documentado de "
-        "cada modelo y rechaza los mal formados igual que haría AWS: anthropic_version "
-        "incorrecto, temperature fuera de [0, 1], cfg_scale fuera de rango, "
-        "text_prompts vacío. Una petición mal construida falla en desarrollo en lugar "
-        "de devolver una respuesta plausible que oculte el error. La suite "
-        "tests/test_contratos_bedrock.py comprueba esas validaciones.",
+        "El sustituto valida cada petición recibida frente al contrato documentado del "
+        "modelo correspondiente y rechaza aquellas mal formadas del mismo modo que lo "
+        "haría el proveedor: valor incorrecto en anthropic_version, temperatura fuera "
+        "del intervalo [0, 1], escala de guía fuera de rango o conjunto de prompts "
+        "vacío. Una petición incorrectamente construida falla durante el desarrollo en "
+        "lugar de devolver una respuesta verosímil que enmascare el error. El conjunto "
+        "de pruebas tests/test_contratos_bedrock.py verifica dichas validaciones.",
         "E8F0F8",
     )
 
@@ -496,11 +549,13 @@ def seccion_33(doc):
     doc.add_heading("3.3. Modelos y parámetros de inferencia", level=1)
 
     parrafo(doc,
-            "Cada tarea usa el modelo y los parámetros que le corresponden por su "
-            "naturaleza, siguiendo la regla de la unidad: rigor y consistencia exigen "
-            "temperatura baja; creatividad y diversidad, temperatura alta. La tabla "
-            "siguiente se genera automáticamente a partir de src/bedrock/models.py, de "
-            "modo que refleja exactamente lo que la aplicación ejecuta.")
+            "Cada tarea emplea el modelo y los parámetros correspondientes a su "
+            "naturaleza, conforme al principio establecido en la unidad: las tareas "
+            "que exigen rigor y consistencia requieren temperaturas bajas, mientras "
+            "que aquellas orientadas a la creatividad y la diversidad admiten "
+            "temperaturas altas. La tabla siguiente se genera automáticamente a partir "
+            "del módulo src/bedrock/models.py, de modo que refleja con exactitud los "
+            "valores que la aplicación aplica en tiempo de ejecución.")
 
     doc.add_heading("Operaciones de texto (Claude)", level=2)
 
@@ -518,37 +573,42 @@ def seccion_33(doc):
     tabla(doc, ["Tarea", "Modelo", "Temp.", "Top-P", "Máx. tokens"], filas,
           anchos=[4.4, 4.6, 1.9, 1.9, 3.2])
 
-    parrafo(doc, "Justificación de cada elección:", negrita=True)
+    parrafo(doc, "Justificación de cada configuración:", negrita=True)
     for tarea in orden:
         p = TEXT_PROFILES[tarea]
         parrafo_rico(doc, [(f"{tarea.etiqueta}. ", True), (p.justificacion, False)],
                      sangria=0.5, espacio_despues=6)
 
-    doc.add_heading("Por qué estos dos modelos y no los más recientes", level=2)
+    doc.add_heading("Criterio de selección de la familia de modelos", level=2)
 
     parrafo(doc,
-            "Se emplean Claude Haiku 4.5 para las tareas deterministas y de alto "
-            "volumen, y Claude Sonnet 4.6 para las creativas. La razón de no usar los "
-            "modelos más recientes de la familia Opus es técnica y merece explicarse: "
-            "esos modelos sustituyen el muestreo explícito por razonamiento adaptativo "
-            "y un parámetro de esfuerzo, y rechazan el parámetro temperature. Adoptarlos "
-            "habría hecho imposible demostrar el control de inferencia que es el objeto "
-            "de estudio de esta unidad.")
+            "Se emplea Claude Haiku 4.5 para las tareas deterministas y de alto "
+            "volumen, y Claude Sonnet 4.6 para aquellas de naturaleza creativa. La "
+            "decisión de no adoptar los modelos más recientes de la familia Opus "
+            "obedece a un criterio técnico que conviene explicitar: dichos modelos "
+            "sustituyen el muestreo estadístico explícito por un mecanismo de "
+            "razonamiento adaptativo gobernado por un parámetro de esfuerzo, y "
+            "rechazan el parámetro de temperatura. Su adopción habría impedido "
+            "demostrar el control de los parámetros de inferencia que constituye el "
+            "objeto de estudio de esta unidad.")
 
     parrafo(doc,
-            "Merece la pena registrar la implicación de fondo: el control de la "
-            "generación se está desplazando del muestreo estadístico —temperatura, "
-            "Top-P— hacia el control del proceso de razonamiento. Un diseño hecho hoy "
-            "sobre temperatura debe prever esa migración.")
+            "Procede señalar la implicación de fondo que se deriva de lo anterior: el "
+            "control de la generación está desplazándose desde el muestreo "
+            "estadístico —temperatura y Top-P— hacia el control del proceso de "
+            "razonamiento del modelo. Todo diseño formulado hoy sobre parámetros de "
+            "muestreo debería prever dicha transición.")
 
     doc.add_heading("Generación de imágenes (Stable Diffusion XL)", level=2)
 
     parrafo(doc,
-            "En imagen los parámetros no son temperatura y Top-P, sino la escala de "
-            "guía (cfg_scale), los pasos de difusión (steps) y la semilla (seed). Cada "
-            "estilo combina dos palancas: el preset nativo del modelo y un sufijo de "
-            "prompt, porque los presets no cubren todos los estilos que pide el "
-            "enunciado —no existe un preset de pintura al óleo—.")
+            "En el ámbito de la generación de imágenes los parámetros relevantes no "
+            "son la temperatura y Top-P, sino la escala de guía (cfg_scale), el número "
+            "de pasos de difusión (steps) y la semilla (seed). Cada estilo combina dos "
+            "mecanismos: el preajuste nativo del modelo y un sufijo añadido al prompt. "
+            "Dicha combinación responde a que los preajustes disponibles no cubren la "
+            "totalidad de los estilos requeridos en el enunciado, dado que no existe "
+            "un preajuste específico para la pintura al óleo.")
 
     filas_img = [
         [e.etiqueta, e.style_preset, f"{e.cfg_scale}", f"{e.steps}"]
@@ -563,45 +623,50 @@ def seccion_33(doc):
 
     caja_destacada(
         doc,
-        "La semilla es el parámetro que hace auditable la generación",
-        "Con la misma semilla y el mismo prompt, Stable Diffusion produce la misma "
-        "imagen. Eso convierte la generación en un proceso repetible: el diseñador "
-        "puede iterar sobre una propuesta concreta en lugar de volver a tirar los "
-        "dados, y la agencia puede acreditar cómo se produjo una imagen publicada. Por "
-        "eso la semilla se guarda junto a cada pieza de la galería y no se trata como "
-        "un detalle interno.",
+        "La semilla como parámetro de auditabilidad",
+        "Ante una misma semilla y un mismo prompt, Stable Diffusion produce la misma "
+        "imagen. Esta propiedad convierte la generación en un proceso reproducible: "
+        "permite al diseñador iterar sobre una propuesta concreta y faculta a la "
+        "agencia para acreditar el procedimiento de obtención de una imagen "
+        "publicada. Por este motivo la semilla se conserva junto a cada pieza de la "
+        "galería y no se trata como un detalle de implementación interno.",
         "FFF4E5",
     )
 
-    doc.add_heading("Embeddings (Amazon Titan)", level=2)
+    doc.add_heading("Representaciones vectoriales (Amazon Titan)", level=2)
     parrafo_rico(doc, [
-        ("Modelo: ", True), (f"{TITAN_EMBEDDINGS}. ", False),
+        ("Modelo empleado: ", True), (f"{TITAN_EMBEDDINGS}. ", False),
         ("Se solicitan vectores de 1024 dimensiones normalizados. La normalización se "
-         "pide al modelo porque permite calcular la similitud coseno como un simple "
-         "producto escalar, sin dividir por las normas en cada consulta.", False),
+         "delega en el modelo por cuanto permite calcular la similitud coseno como un "
+         "producto escalar, evitando la división por las normas en cada consulta.",
+         False),
     ])
 
-    doc.add_heading("Control de coste y de longitud", level=2)
+    doc.add_heading("Control de coste y de longitud de respuesta", level=2)
     parrafo(doc,
-            "max_tokens se fija por tarea y no de forma global: 1024 para resumir "
-            "—porque un resumen más largo ha dejado de ser un resumen— y 4096 para "
-            "expandir. Es simultáneamente un control de calidad y un control de gasto, "
-            "ya que en Bedrock se paga por token generado. En producción se añadiría "
-            "además un presupuesto mensual con alertas, y caché de prompts para los "
-            "system prompts, que son idénticos en todas las llamadas de una misma "
-            "tarea.")
+            "El parámetro max_tokens se establece por tarea y no de forma global: 1024 "
+            "para la operación de resumen, dado que un resultado de mayor extensión "
+            "dejaría de cumplir su función, y 4096 para la expansión de ideas. "
+            "Constituye simultáneamente un control de calidad y un mecanismo de "
+            "contención del gasto, por cuanto la facturación de Amazon Bedrock se "
+            "establece por token generado. En un entorno productivo procedería añadir "
+            "un presupuesto mensual con alertas asociadas, así como el "
+            "almacenamiento en caché de las instrucciones de sistema, idénticas en "
+            "todas las invocaciones de una misma tarea.")
 
 
 def seccion_34(doc):
     doc.add_heading("3.4. Instrucciones del sistema (System Prompt)", level=1)
 
     parrafo(doc,
-            "El system prompt se construye por composición, no como cuatro textos "
-            "independientes: un tronco común e invariable —rol, restricciones y reglas "
-            "de prioridad— más un bloque específico por operación con el objetivo y el "
-            "formato de salida. La razón es de seguridad: si cada operación repitiera "
-            "sus propias reglas, acabarían divergiendo y la defensa frente a inyección "
-            "tendría agujeros distintos según el botón que pulsara el usuario.")
+            "Las instrucciones de sistema se construyen mediante composición y no como "
+            "cuatro textos independientes: un tronco común e invariable —que "
+            "comprende el rol, las restricciones y las reglas de prioridad— al que se "
+            "añade un bloque específico por operación con su objetivo y su formato de "
+            "salida. La justificación de este enfoque es de orden securitario: si cada "
+            "operación replicara sus propias reglas, estas divergirían con el tiempo y "
+            "la defensa frente a la inyección de prompt presentaría vulnerabilidades "
+            "distintas según la operación seleccionada por el usuario.")
 
     doc.add_heading("Los cuatro pilares", level=2)
 
@@ -609,50 +674,56 @@ def seccion_34(doc):
           ["Pilar", "Contenido en Aurora Studio"],
           [
               ["Rol / persona",
-               "Asistente editorial interno de una agencia de marketing. Editor "
-               "profesional de marca: preciso, sobrio y directo. Prioriza la claridad "
-               "sobre el lucimiento."],
+               "Asistente editorial interno de una agencia de marketing, caracterizado "
+               "como editor profesional de marca: preciso, sobrio y directo, con "
+               "prioridad de la claridad sobre el efecto estilístico."],
               ["Objetivo",
-               "Específico por operación: resumir al 30–40 %, expandir sin introducir "
-               "hechos nuevos, corregir sin reescribir por preferencia, generar tres "
-               "variaciones genuinamente distintas."],
+               "Específico por operación: reducción al 30–40 % de la extensión "
+               "original en el resumen, desarrollo sin introducción de hechos nuevos "
+               "en la expansión, corrección sin reescritura por preferencia, y "
+               "generación de tres variaciones genuinamente diferenciadas."],
               ["Restricciones",
-               "Siete reglas inquebrantables: no inventar datos, avisar cuando falte "
-               "información, respetar el idioma, conservar el significado, no emitir "
-               "afirmaciones sensibles sin respaldo, no reproducir marcas ajenas, no "
-               "producir estereotipos. Más las reglas de prioridad frente a inyección."],
+               "Siete reglas inquebrantables: no inventar datos, advertir ante la "
+               "ausencia de información, respetar el idioma de entrada, conservar el "
+               "significado, no emitir afirmaciones sensibles sin respaldo, no "
+               "reproducir marcas ajenas y no producir estereotipos. A ellas se añaden "
+               "las reglas de prioridad frente a la inyección de instrucciones."],
               ["Formato de salida",
-               "Definido por operación: texto plano sin preámbulos para resumir; "
-               "párrafos con máximo tres secciones para expandir; texto corregido más "
-               "una sección CAMBIOS para corregir; tres bloques etiquetados en Markdown "
-               "para variar."],
+               "Definido por operación: texto plano sin preámbulos para el resumen; "
+               "párrafos con un máximo de tres secciones para la expansión; texto "
+               "corregido acompañado de una sección de cambios para la corrección; y "
+               "tres bloques etiquetados en formato Markdown para las variaciones."],
           ],
           anchos=[3.4, 12.6])
 
-    doc.add_heading("System prompt completo (operación: corregir)", level=2)
+    doc.add_heading("Instrucciones completas (operación de corrección)", level=2)
 
     parrafo(doc,
-            "Se reproduce íntegro el prompt que la aplicación envía, extraído "
-            "directamente del código. El bloque de contexto de marca que añade el RAG "
-            "se muestra en la sección 3.5.")
+            "Se reproducen íntegramente las instrucciones que la aplicación transmite "
+            "al modelo, extraídas directamente del código fuente. El bloque de "
+            "contexto de marca que incorpora el mecanismo de recuperación se detalla "
+            "en el apartado 3.5.")
 
     prompt = build_system_prompt(TextTask.CORREGIR)
     bloque_codigo(doc, prompt, tamano=7.8)
 
-    doc.add_heading("La regla que hace el trabajo de seguridad", level=2)
+    doc.add_heading("Mecanismo de prioridad de instrucciones", level=2)
 
     parrafo(doc,
-            "El apartado «Prioridad de instrucciones» es el que convierte la "
-            "delimitación en una defensa real. Declara explícitamente que lo que llega "
-            "entre las etiquetas de contenido es dato y nunca instrucción, enumera los "
-            "patrones de ataque más habituales para que el modelo los reconozca como "
-            "texto a editar, y establece que las reglas de sistema prevalecen sobre "
-            "cualquier cosa que aparezca en el contenido del usuario.")
+            "El apartado denominado «Prioridad de instrucciones» constituye el "
+            "elemento que convierte la delimitación del contenido en una defensa "
+            "efectiva. Establece de forma explícita que el material comprendido entre "
+            "las etiquetas de contenido tiene naturaleza de dato y en ningún caso de "
+            "instrucción, enumera los patrones de ataque más frecuentes para que el "
+            "modelo los reconozca como texto susceptible de edición, y determina que "
+            "las reglas de sistema prevalecen sobre cualquier contenido aportado por "
+            "el usuario.")
 
     parrafo(doc,
-            "Por sí sola no basta: un usuario podría cerrar la etiqueta e intentar "
-            "escribir fuera del bloque delimitado. Esa vía se cierra en código, no en "
-            "el prompt, y se explica en la sección 3.6.")
+            "Esta medida resulta insuficiente por sí sola: un usuario podría cerrar la "
+            "etiqueta delimitadora e intentar redactar fuera del bloque acotado. Dicho "
+            "vector se neutraliza mediante código y no mediante instrucciones, según "
+            "se detalla en el apartado 3.6.")
 
 
 def seccion_35(doc):
@@ -660,331 +731,366 @@ def seccion_35(doc):
 
     caja_destacada(
         doc,
-        "La distinción, en una línea",
-        "RAG aporta conocimiento verificable; la memoria aporta continuidad de trabajo. "
-        "Aurora Studio implementa ambos, y los mantiene separados a propósito.",
+        "Delimitación conceptual",
+        "La generación aumentada por recuperación aporta conocimiento verificable; la "
+        "memoria aporta continuidad del trabajo en curso. Aurora Studio implementa "
+        "ambos mecanismos y los mantiene deliberadamente diferenciados.",
         "E8F4EC",
     )
 
-    doc.add_heading("RAG: sí, y por qué", level=2)
+    doc.add_heading("Justificación del uso de RAG", level=2)
 
     parrafo(doc,
-            "La aplicación necesita que Claude conozca la guía de estilo interna: "
-            "paleta, terminología de producto, prohibiciones de estilo y política "
-            "legal. Ese conocimiento no puede vivir en el system prompt por tres "
-            "razones: ocuparía miles de tokens en cada llamada, quedaría desactualizado "
-            "cada vez que el departamento legal cambiara una norma, y no permitiría "
-            "citar la fuente de una recomendación concreta.")
+            "La aplicación requiere que el modelo de lenguaje disponga de la guía de "
+            "estilo interna, que comprende la paleta cromática, la terminología de "
+            "producto, las prohibiciones estilísticas y la política legal. Dicho "
+            "conocimiento no puede incorporarse a las instrucciones de sistema por "
+            "tres razones: ocuparía varios miles de tokens en cada invocación, "
+            "quedaría desactualizado ante cada modificación normativa del departamento "
+            "jurídico, y no permitiría citar la fuente concreta que respalda una "
+            "recomendación determinada.")
 
     parrafo(doc,
-            "Es el caso de uso canónico de RAG: recuperar de un corpus propio los "
-            "fragmentos relevantes para la consulta y entregárselos al modelo antes de "
-            "que responda.")
+            "Se trata, por tanto, del caso de uso canónico de la generación aumentada "
+            "por recuperación: obtener de un corpus propio los fragmentos pertinentes "
+            "para la consulta formulada y proporcionárselos al modelo con carácter "
+            "previo a la generación de la respuesta.")
 
-    doc.add_heading("Cómo está construido el índice", level=2)
+    doc.add_heading("Construcción del índice", level=2)
 
     bloque_codigo(doc,
-                  "4 documentos .md de la guía de marca\n"
+                  "4 documentos .md de la guia de marca\n"
                   "        |\n"
                   "        v  troceado por secciones (encabezados de nivel 2)\n"
                   "14 fragmentos\n"
                   "        |\n"
-                  "        v  Amazon Titan Embeddings · 1024 dimensiones\n"
+                  "        v  Amazon Titan Embeddings - 1024 dimensiones\n"
                   "matriz 14 x 1024\n"
                   "        |\n"
                   "consulta --> embedding --> similitud coseno --> top-3 con umbral",
                   tamano=9)
 
-    parrafo(doc,
-            "Tres decisiones de diseño merecen justificarse:")
+    parrafo(doc, "Tres decisiones de diseño requieren justificación expresa.")
 
     vineta_rica(doc, [
-        ("Troceado por secciones, no por ventana de caracteres. ", True),
-        ("La guía ya viene estructurada por temas. Partirla cada N caracteres rompería "
-         "las tablas y separaría una prohibición de su contexto. Cuando el documento "
-         "tiene estructura propia, el troceado debe respetarla.", False),
+        ("Segmentación por secciones frente a ventana de caracteres. ", True),
+        ("La guía de estilo presenta una estructura temática propia. Su segmentación "
+         "cada N caracteres fragmentaría las tablas y separaría cada prohibición de su "
+         "contexto. Cuando el documento posee estructura propia, la segmentación debe "
+         "respetarla.", False),
     ])
     vineta_rica(doc, [
-        ("Índice en memoria, no base vectorial gestionada. ", True),
-        ("El corpus son catorce fragmentos. Introducir OpenSearch Serverless o pgvector "
-         "aquí sería sobreingeniería. El punto de corte a partir del cual sí "
-         "compensaría está en el orden de las decenas de miles de fragmentos, o cuando "
-         "el índice deba compartirse entre procesos y sobrevivir a los reinicios.", False),
+        ("Índice en memoria frente a base de datos vectorial gestionada. ", True),
+        ("El corpus está compuesto por catorce fragmentos. La incorporación de "
+         "soluciones como OpenSearch Serverless o pgvector constituiría "
+         "sobreingeniería. El umbral a partir del cual dicha migración resultaría "
+         "justificada se sitúa en el orden de las decenas de miles de fragmentos, o "
+         "bien cuando el índice deba compartirse entre procesos y persistir entre "
+         "reinicios.", False),
     ])
     vineta_rica(doc, [
         ("Umbral de similitud calibrado empíricamente. ", True),
-        ("Se midió la puntuación del mejor fragmento en dos poblaciones: ocho consultas "
-         "legítimas sobre la guía y cuatro consultas de ruido ajenas al dominio. El "
-         "ruido no superó 0,052 y la consulta legítima peor puntuada alcanzó 0,120. El "
-         "umbral se fijó en 0,09, en el hueco entre ambas. El script "
-         "tests/test_rag_umbral.py reproduce la medición.", False),
+        ("Se midió la puntuación del fragmento mejor valorado sobre dos poblaciones de "
+         "consultas: ocho consultas legítimas relativas a la guía de marca y cuatro "
+         "consultas de ruido ajenas al dominio. Las consultas de ruido no superaron el "
+         "valor 0,052, mientras que la consulta legítima peor valorada alcanzó 0,120. "
+         "El umbral se estableció en 0,09, situado en el intervalo entre ambas "
+         "poblaciones. El procedimiento es reproducible mediante el script "
+         "tests/test_rag_umbral.py.", False),
     ])
 
     parrafo(doc,
-            "El umbral evita el fallo más común de un RAG mal calibrado: entregar "
-            "siempre k fragmentos aunque ninguno venga a cuento. Inyectar ruido es peor "
-            "que no inyectar nada, porque empuja al modelo a forzar conexiones que no "
-            "existen.")
+            "El establecimiento de un umbral previene el error más frecuente en una "
+            "implementación deficientemente calibrada: la entrega sistemática de k "
+            "fragmentos con independencia de su pertinencia. La incorporación de "
+            "contexto irrelevante resulta más perjudicial que su ausencia, por cuanto "
+            "induce al modelo a establecer relaciones inexistentes.")
 
-    doc.add_heading("Memoria: sí, y es otra cosa", level=2)
+    doc.add_heading("Justificación del uso de memoria", level=2)
 
     parrafo(doc,
-            "La memoria de Aurora Studio es el historial de la pieza en curso: el texto "
-            "que se está editando, sus versiones anteriores, quién hizo cada cambio con "
-            "qué modelo y parámetros, y los comentarios asociados. Aporta continuidad "
+            "La memoria de Aurora Studio se materializa en el historial de la pieza en "
+            "curso: el texto sometido a edición, sus versiones precedentes, la autoría "
+            "de cada modificación con indicación del modelo y los parámetros "
+            "empleados, y los comentarios asociados. Su función es aportar continuidad "
             "dentro de la sesión de trabajo.")
 
     parrafo(doc,
-            "Está implementada como un registro de solo-anexado: las versiones no se "
-            "sobrescriben nunca, y restaurar una versión anterior apila una versión "
-            "nueva en lugar de borrar. Es más caro en memoria y es lo correcto, porque "
-            "en un flujo de aprobación poder demostrar qué se aprobó y cuándo es un "
-            "requisito de trazabilidad, no una comodidad.")
+            "Su implementación adopta la forma de un registro de solo-anexado: las "
+            "versiones no se sobrescriben en ningún caso, y la restauración de una "
+            "versión anterior genera una versión nueva en lugar de eliminar las "
+            "existentes. Esta decisión implica un mayor consumo de memoria y se "
+            "considera no obstante la correcta, por cuanto en un flujo de aprobación "
+            "la capacidad de acreditar qué se aprobó y en qué momento constituye un "
+            "requisito de trazabilidad y no una comodidad funcional.")
 
-    doc.add_heading("Por qué no se confunden", level=2)
+    doc.add_heading("Diferenciación entre ambos mecanismos", level=2)
 
     tabla(doc,
-          ["", "RAG", "Memoria"],
+          ["Criterio", "RAG", "Memoria"],
           [
-              ["Qué aporta", "Conocimiento verificable y externo",
+              ["Naturaleza de la aportación", "Conocimiento verificable y externo",
                "Continuidad del trabajo en curso"],
-              ["De dónde viene", "Guía de estilo de marca (documentos propios)",
-               "Acciones del usuario en esta sesión"],
-              ["Cómo se recupera", "Similitud semántica sobre embeddings",
+              ["Origen", "Guía de estilo de marca (documentos propios)",
+               "Acciones del usuario durante la sesión"],
+              ["Mecanismo de acceso", "Similitud semántica sobre representaciones "
+               "vectoriales",
                "Acceso directo al historial de la pieza"],
-              ["Cuándo cambia", "Cuando legal o marca actualizan la guía",
-               "En cada operación que el usuario guarda"],
-              ["Dónde vive", "Índice vectorial (src/services/rag_service.py)",
-               "Estado de sesión (src/domain/versioning.py)"],
+              ["Frecuencia de cambio", "Ante actualizaciones de la guía por marca o "
+               "asesoría jurídica",
+               "En cada operación que el usuario consolida"],
+              ["Ubicación en el código", "src/services/rag_service.py",
+               "src/domain/versioning.py"],
           ],
-          anchos=[3.2, 6.4, 6.4])
+          anchos=[3.6, 6.2, 6.2])
 
     parrafo(doc,
-            "El error que se ha evitado deliberadamente es usar la memoria "
-            "conversacional como sustituto del RAG, es decir, pegar la guía de estilo "
-            "en el primer mensaje de la conversación y confiar en que el modelo la "
-            "recuerde. Eso consume contexto en cada turno, degrada la atención sobre lo "
-            "importante y no permite saber qué fragmento concreto respaldó una "
-            "recomendación.")
+            "Se ha evitado deliberadamente el error consistente en emplear la memoria "
+            "conversacional como sustituto de la recuperación, esto es, incorporar la "
+            "guía de estilo al primer mensaje de la conversación confiando en su "
+            "retención por parte del modelo. Dicha práctica consume contexto en cada "
+            "turno, degrada la atención sobre la información relevante e imposibilita "
+            "determinar qué fragmento concreto respaldó una recomendación.")
 
 
 def seccion_36(doc):
     doc.add_heading("3.6. Ética y seguridad", level=1)
 
     parrafo(doc,
-            "Los cuatro frentes se abordan con controles implementados en el flujo de "
-            "ejecución, no solo declarados. Se documenta también, en cada uno, hasta "
-            "dónde llega el control y qué haría falta en producción.")
+            "Los cuatro frentes establecidos en la guía se abordan mediante controles "
+            "implementados en el flujo de ejecución y no únicamente enunciados. Se "
+            "documenta asimismo, en cada uno de ellos, el alcance efectivo del control "
+            "y los elementos que resultarían necesarios en un entorno productivo.")
 
-    doc.add_heading("Moderación", level=2)
+    doc.add_heading("Moderación de contenido", level=2)
 
     parrafo(doc,
-            "Se modera la entrada y también la salida. Moderar solo la entrada es "
-            "insuficiente: un prompt inocuo puede producir una salida problemática. El "
-            "orden de los pasos está pensado para que el control barato se ejecute "
-            "antes que el caro:")
+            "Se somete a moderación tanto la entrada como la salida. La moderación "
+            "exclusiva de la entrada resulta insuficiente, por cuanto una petición "
+            "inocua puede generar una respuesta problemática. La secuencia de pasos se "
+            "ha ordenado de modo que los controles de menor coste computacional "
+            "precedan a los de mayor coste.")
 
     bloque_codigo(doc,
-                  "1. Moderar la entrada        <- si bloquea, no se gasta en el modelo\n"
-                  "2. Sanear anti-inyeccion     <- antes de construir el prompt\n"
-                  "3. Recuperar contexto RAG\n"
-                  "4. Construir el prompt\n"
+                  "1. Moderar la entrada        <- si bloquea, no se invoca al modelo\n"
+                  "2. Sanear anti-inyeccion     <- previo a la construccion del prompt\n"
+                  "3. Recuperar contexto (RAG)\n"
+                  "4. Construir las instrucciones\n"
                   "5. Invocar el modelo\n"
-                  "6. Moderar la salida         <- el riesgo no esta solo en la entrada",
+                  "6. Moderar la salida         <- el riesgo no reside solo en la entrada",
                   tamano=9)
 
     parrafo(doc,
-            "La moderación implementada es por listas y reglas: detecta lo evidente y "
-            "deja pasar lo sutil. Se declara así de forma explícita porque presentarla "
-            "como una solución completa sería precisamente el error que el caso pide "
-            "evitar. En una implantación real sería la primera de tres capas: esta, "
-            "más Amazon Bedrock Guardrails con políticas gestionadas y detección de "
-            "información personal, más los filtros nativos de los propios modelos "
-            "—Stable Diffusion ya devuelve finishReason CONTENT_FILTERED cuando "
-            "rechaza una generación, y la aplicación lo trata—.")
+            "La moderación implementada opera mediante listas y reglas, por lo que "
+            "detecta las infracciones evidentes y no aquellas de carácter sutil. Se "
+            "declara esta limitación de forma explícita por cuanto su presentación "
+            "como solución completa constituiría precisamente el error que el caso "
+            "requiere evitar. En una implantación real conformaría la primera de tres "
+            "capas, complementada por Amazon Bedrock Guardrails —con políticas "
+            "gestionadas de contenido y detección de información personal— y por los "
+            "filtros nativos de los propios modelos. Cabe señalar que Stable Diffusion "
+            "devuelve el indicador CONTENT_FILTERED al rechazar una generación, "
+            "circunstancia que la aplicación contempla y gestiona.")
 
     doc.add_heading("Inyección de prompt", level=2)
 
     parrafo(doc,
-            "El modelo de amenaza asumido es un usuario autenticado de la herramienta: "
-            "un redactor, o alguien que pega un texto de origen externo sin revisarlo. "
-            "Su objetivo puede ser extraer el system prompt, anular las reglas de marca "
-            "o usar la herramienta fuera de política.")
+            "El modelo de amenaza considerado corresponde a un usuario autenticado de "
+            "la herramienta: un redactor, o bien una persona que incorpora un texto de "
+            "origen externo sin revisión previa. Su finalidad puede consistir en "
+            "extraer las instrucciones de sistema, anular las reglas de marca o "
+            "emplear la herramienta al margen de la política establecida.")
 
-    parrafo(doc, "La defensa tiene tres capas, y solo una es determinista:")
+    parrafo(doc,
+            "La defensa se articula en tres capas, de las cuales únicamente una ofrece "
+            "garantía determinista.")
 
     tabla(doc,
-          ["Capa", "Qué hace", "Garantía"],
+          ["Capa", "Funcionamiento", "Garantía"],
           [
               ["Neutralización de delimitadores",
-               "Sustituye cualquier aparición de las etiquetas reservadas en el texto "
-               "del usuario, de modo que no pueda cerrar el bloque de contenido.",
+               "Sustituye toda aparición de las etiquetas reservadas en el texto "
+               "aportado por el usuario, impidiendo el cierre del bloque de contenido.",
                "Determinista"],
               ["Detección de patrones",
-               "Identifica frases con forma de instrucción («ignora las instrucciones "
-               "anteriores», «revela tu prompt») y avisa al usuario y al registro.",
+               "Identifica formulaciones con estructura de instrucción y notifica al "
+               "usuario y al registro de la aplicación.",
                "Heurística"],
-              ["Prioridad declarada en el prompt",
-               "El system prompt establece que lo delimitado es dato y que las reglas "
-               "de sistema prevalecen.",
-               "Depende del modelo"],
+              ["Prioridad declarada en las instrucciones",
+               "Las instrucciones de sistema establecen la naturaleza de dato del "
+               "contenido delimitado y la prevalencia de las reglas de sistema.",
+               "Dependiente del modelo"],
           ],
           anchos=[4.4, 8.6, 3.0])
 
     caja_destacada(
         doc,
-        "Una decisión de producto, no solo técnica",
-        "La entrada sospechosa no se rechaza: se neutraliza y se avisa. Bloquearla "
-        "sería la respuesta equivocada, porque un redactor puede legítimamente querer "
-        "editar un artículo sobre inyección de prompt, y la herramienta debe "
-        "permitirlo. Lo que no debe permitir es que ese texto cambie el comportamiento "
-        "del modelo.",
+        "Criterio adoptado ante entradas sospechosas",
+        "La entrada sospechosa no se rechaza, sino que se neutraliza y se notifica. El "
+        "rechazo constituiría una respuesta inadecuada, por cuanto un redactor puede "
+        "legítimamente requerir la edición de un texto que trate sobre inyección de "
+        "prompt, y la herramienta debe permitirlo. Lo que no debe permitir es que "
+        "dicho texto altere el comportamiento del modelo.",
         "FFF4E5",
     )
 
     parrafo(doc,
-            "Como control de última línea, la moderación de salida comprueba que la "
-            "respuesta no contenga fragmentos del propio system prompt. Si los "
-            "contuviera, sería la señal de una inyección con éxito y la salida se "
-            "bloquea antes de mostrarse.")
+            "Como control de última instancia, la moderación de salida verifica que la "
+            "respuesta no contenga fragmentos de las propias instrucciones de sistema. "
+            "Su presencia constituiría el indicio de una inyección exitosa, ante lo "
+            "cual la salida se bloquea con carácter previo a su presentación.")
 
     doc.add_heading("Sesgo", level=2)
 
     parrafo(doc,
-            "El sesgo se aborda en tres puntos. En el system prompt, con una regla "
-            "inquebrantable que prohíbe estereotipos y obliga a señalar los que "
-            "aparezcan en el texto de entrada. En los prompts de imagen, con un "
+            "El tratamiento del sesgo se articula en tres puntos del sistema. En las "
+            "instrucciones de sistema, mediante una regla inquebrantable que prohíbe "
+            "los estereotipos y obliga a señalar aquellos presentes en el texto de "
+            "entrada. En las peticiones de generación de imágenes, mediante un "
             "detector de descriptores que fijan atributos personales sin necesidad "
-            "funcional: un rol profesional sin más contexto hará que el modelo "
-            "reproduzca el estereotipo dominante de su conjunto de entrenamiento. Y en "
-            "la salida, revisando el texto generado con los mismos marcadores.")
+            "funcional, dado que la mención de un rol profesional sin contexto "
+            "adicional induce al modelo a reproducir el estereotipo predominante en su "
+            "conjunto de entrenamiento. Y en la respuesta generada, mediante la "
+            "revisión del texto con los mismos marcadores.")
 
     parrafo(doc,
-            "El detector avisa, no bloquea, y la razón es la misma que antes: el "
-            "objetivo es que la persona decida con la información delante, no que la "
-            "herramienta decida por ella. Un filtro de sesgo que bloquea acaba "
-            "desactivado.")
+            "El detector notifica sin bloquear, atendiendo al mismo criterio expuesto "
+            "anteriormente: el objetivo consiste en que la persona adopte la decisión "
+            "disponiendo de la información pertinente, y no en que la herramienta la "
+            "adopte en su lugar. Un filtro de sesgo de carácter bloqueante tiende a "
+            "ser desactivado por sus usuarios.")
 
     parrafo(doc,
-            "Límite declarado: esto detecta sesgo léxico en el prompt, no sesgo en la "
-            "imagen resultante. Evaluar lo segundo exigiría generar lotes y analizar "
-            "la distribución demográfica de las salidas, que es un trabajo de auditoría "
-            "periódica, no un control en línea.")
+            "Límite declarado: el mecanismo descrito detecta sesgo léxico en la "
+            "petición, no sesgo en la imagen resultante. La evaluación de este último "
+            "requeriría la generación de lotes y el análisis de la distribución "
+            "demográfica de las salidas, lo que constituye una labor de auditoría "
+            "periódica y no un control en línea.")
 
     doc.add_heading("Privacidad y derechos de autor", level=2)
 
     vineta_rica(doc, [
         ("Marcas registradas. ", True),
-        ("El prompt de imagen se contrasta con una lista de marcas protegidas. Generar "
-         "piezas que evoquen marcas ajenas expone a la agencia a una reclamación por "
-         "infracción, así que aquí sí se bloquea.", False),
+        ("La petición de generación de imágenes se contrasta con un listado de marcas "
+         "protegidas. La producción de piezas que evoquen marcas ajenas expone a la "
+         "agencia a una reclamación por infracción, motivo por el cual en este "
+         "supuesto sí se procede al bloqueo.", False),
     ])
     vineta_rica(doc, [
         ("Estilos de autor. ", True),
         ("Se bloquean las peticiones que invocan el estilo de un artista vivo o de un "
-         "estudio con obra protegida. El estilo debe describirse por sus atributos "
-         "visuales, no por su autor. Es el vector de riesgo más habitual en generación "
-         "de imágenes para marketing.", False),
+         "estudio con obra protegida. El estilo debe describirse mediante sus "
+         "atributos visuales y no mediante su autoría. Constituye el vector de riesgo "
+         "más frecuente en la generación de imágenes para marketing.", False),
     ])
     vineta_rica(doc, [
         ("Procedencia. ", True),
-        ("Cada imagen conserva su prompt, su estilo, su semilla, su autor y la marca "
-         "explícita de haber sido generada con IA. Es lo que permite acreditar el "
-         "proceso si un tercero lo cuestiona, y es un requisito que la propia guía de "
-         "marca impone.", False),
+        ("Cada imagen conserva su prompt, su estilo, su semilla, su autoría y la "
+         "indicación expresa de haber sido generada mediante inteligencia artificial. "
+         "Dichos metadatos permiten acreditar el procedimiento ante un eventual "
+         "cuestionamiento por terceros, y responden a un requisito establecido por la "
+         "propia guía de marca.", False),
     ])
     vineta_rica(doc, [
         ("Datos personales. ", True),
-        ("La política prohíbe enviar datos personales de clientes a los modelos. En "
-         "producción esto se reforzaría con la detección de información personal de "
-         "Bedrock Guardrails, que puede redactar automáticamente los datos antes de la "
-         "inferencia.", False),
+        ("La política prohíbe la transmisión de datos personales de clientes a los "
+         "modelos. En un entorno productivo esta medida se reforzaría mediante la "
+         "detección de información personal de Amazon Bedrock Guardrails, capaz de "
+         "redactar automáticamente dichos datos con carácter previo a la inferencia.",
+         False),
     ])
     vineta_rica(doc, [
         ("Cifrado. ", True),
-        ("En producción: cifrado en reposo con claves gestionadas por el cliente en KMS "
-         "para el bucket de imágenes y el historial, y TLS en tránsito, que Bedrock ya "
-         "impone. En esta entrega el almacenamiento es de sesión y no persiste, por lo "
-         "que el cifrado en reposo no aplica todavía; se documenta como requisito del "
-         "paso a producción, no como algo resuelto.", False),
+        ("En un entorno productivo procedería aplicar cifrado en reposo con claves "
+         "gestionadas por el cliente mediante KMS para el almacenamiento de imágenes y "
+         "el historial, así como cifrado en tránsito, que Amazon Bedrock ya impone. En "
+         "la presente entrega el almacenamiento es de sesión y no persiste, por lo que "
+         "el cifrado en reposo no resulta aplicable; se documenta como requisito del "
+         "paso a producción y no como elemento resuelto.", False),
     ])
 
     parrafo(doc,
-            "Sobre la titularidad de lo generado: es un terreno jurídicamente "
-            "inestable que varía por jurisdicción. La política adoptada es de "
-            "prudencia —no registrar las imágenes generadas como obra propia, no usarlas "
-            "como elemento central de una identidad de marca registrable, y documentar "
-            "siempre el prompt y la semilla—. No es una respuesta jurídica; es una "
-            "posición defendible mientras no la haya.")
+            "En cuanto a la titularidad del contenido generado, se trata de una "
+            "materia jurídicamente inestable que presenta variaciones según la "
+            "jurisdicción. La política adoptada responde a un criterio de prudencia: "
+            "no registrar las imágenes generadas como obra propia, no emplearlas como "
+            "elemento central de una identidad de marca susceptible de registro, y "
+            "documentar en todo caso el prompt y la semilla utilizados. No constituye "
+            "una respuesta jurídica, sino una posición defendible en ausencia de la "
+            "misma.")
 
 
 def seccion_4(doc):
-    doc.add_heading("4. Vía A · La aplicación entregada", level=1)
+    doc.add_heading("4. Vía A · La aplicación desarrollada", level=1)
 
     parrafo(doc,
-            "Aurora Studio es una aplicación Streamlit con cuatro pantallas. Cubre el "
-            "alcance mínimo que exige la guía y la totalidad del alcance ampliado.")
+            "Aurora Studio es una aplicación web desarrollada con Streamlit y "
+            "compuesta por cuatro pantallas. Cubre la totalidad del alcance mínimo "
+            "exigido en la guía, así como el alcance ampliado en su integridad.")
 
     doc.add_heading("Alcance cubierto", level=2)
 
     tabla(doc,
-          ["Requisito de la guía", "Estado", "Dónde se ve"],
+          ["Requisito de la guía", "Estado", "Ubicación"],
           [
               ["Campo de texto que genera imagen con Stable Diffusion vía Bedrock",
                "Completo", "Pantalla «Generación de imágenes»"],
               ["Función que mejora texto con Claude (resumir y corregir como mínimo)",
-               "Completo · 4 operaciones", "Pantalla «Edición de contenido»"],
-              ["Ambos flujos llaman a Bedrock y muestran el resultado",
+               "Completo · cuatro operaciones", "Pantalla «Edición de contenido»"],
+              ["Ambos flujos invocan Bedrock y presentan el resultado",
                "Completo · modo simulado", "Panel «Detalle técnico de la llamada»"],
               ["Selección de estilos y galería con descarga",
-               "Completo · 4 estilos", "Pantallas «Generación» y «Galería»"],
+               "Completo · cuatro estilos", "Pantallas «Generación» y «Galería»"],
               ["Historial y control de versiones del texto",
                "Completo · con comparación visual", "Pantalla «Colaboración»"],
               ["Roles, permisos y comentarios",
-               "Completo · 3 roles, 6 permisos", "Pantalla «Colaboración»"],
+               "Completo · tres roles, seis permisos", "Pantalla «Colaboración»"],
           ],
           anchos=[7.4, 4.2, 4.4])
 
-    doc.add_heading("Cómo ejecutarla", level=2)
+    doc.add_heading("Procedimiento de ejecución", level=2)
     bloque_codigo(doc,
                   "pip install -r requirements.txt\n"
                   "python -m streamlit run app.py\n"
                   "\n"
-                  "# Para llamar a AWS de verdad, sin tocar el codigo:\n"
+                  "# Para invocar Amazon Bedrock de forma efectiva:\n"
                   "#   copiar .env.example a .env\n"
                   "#   BEDROCK_BACKEND=aws\n"
                   "#   AWS_REGION=us-east-1\n"
                   "#   aws configure",
                   tamano=9)
     parrafo(doc,
-            "Se invoca Streamlit como módulo de Python y no con el comando "
-            "«streamlit» a secas porque en muchas instalaciones de Windows la "
-            "carpeta Scripts del intérprete no está en el PATH, y el comando "
-            "directo falla aunque el paquete esté bien instalado. Invocarlo como "
-            "módulo usa el mismo intérprete con el que se instalaron las "
-            "dependencias.", tamano=10, color=GRIS)
+            "Se invoca Streamlit como módulo de Python y no mediante el comando "
+            "directo por cuanto en numerosas instalaciones de Windows el directorio "
+            "Scripts del intérprete no figura en la variable PATH, circunstancia que "
+            "provoca el fallo del comando pese a estar el paquete correctamente "
+            "instalado. La invocación como módulo emplea el mismo intérprete con el "
+            "que se instalaron las dependencias.", tamano=10, color=GRIS)
 
-    doc.add_heading("Evidencia de la integración", level=2)
+    doc.add_heading("Evidencia de la corrección de la integración", level=2)
 
     parrafo(doc,
-            "Como la aplicación no llama a AWS, la evidencia de que la integración es "
-            "correcta se aporta por tres vías distintas:")
+            "Dado que la aplicación no invoca efectivamente a Amazon Web Services, la "
+            "evidencia de la corrección de la integración se aporta por tres vías "
+            "complementarias.")
 
     vineta_rica(doc, [
-        ("El payload visible en la interfaz. ", True),
-        ("Cada operación muestra, en el panel «Detalle técnico de la llamada», el JSON "
-         "exacto que se envía a Bedrock. Es el mismo en modo simulado y en modo real.", False),
+        ("Petición visible en la interfaz. ", True),
+        ("Cada operación presenta, en el panel «Detalle técnico de la llamada», el "
+         "documento JSON exacto que se transmite a Amazon Bedrock, idéntico en modo "
+         "simulado y en modo real.", False),
     ])
     vineta_rica(doc, [
         ("Validación de contrato en el sustituto. ", True),
-        ("MockBedrockRuntime rechaza los payloads mal formados con los mismos criterios "
-         "que AWS.", False),
+        ("La clase MockBedrockRuntime rechaza las peticiones mal formadas aplicando "
+         "los mismos criterios que el proveedor.", False),
     ])
     vineta_rica(doc, [
         ("Pruebas automatizadas. ", True),
-        ("tests/test_contratos_bedrock.py comprueba la forma de las peticiones de los "
-         "tres modelos y el comportamiento de los controles de seguridad; "
-         "tests/test_rag_umbral.py reproduce la calibración del RAG.", False),
+        ("El módulo tests/test_contratos_bedrock.py verifica la estructura de las "
+         "peticiones dirigidas a los tres modelos y el comportamiento de los controles "
+         "de seguridad; el módulo tests/test_rag_umbral.py reproduce la calibración "
+         "del umbral de recuperación.", False),
     ])
 
 
@@ -992,36 +1098,39 @@ def seccion_5(doc):
     doc.add_heading("5. Limitaciones declaradas", level=1)
 
     parrafo(doc,
-            "Enumerarlas es parte del trabajo: un diseño que no reconoce sus límites no "
-            "es un diseño terminado.")
+            "La enumeración de las limitaciones forma parte del trabajo: un diseño que "
+            "no reconoce sus propios límites no puede considerarse concluido.")
 
     tabla(doc,
-          ["Limitación", "Alcance real", "Qué haría falta"],
+          ["Limitación", "Alcance efectivo", "Requisito de superación"],
           [
-              ["No se ejecuta contra AWS",
+              ["Ausencia de ejecución contra Amazon Web Services",
                "Ninguna respuesta procede de los modelos reales.",
-               "Cuenta AWS con acceso concedido a los tres modelos y "
+               "Cuenta con acceso concedido a los tres modelos y configuración "
                "BEDROCK_BACKEND=aws."],
-              ["Calidad del sustituto de embeddings",
-               "Es un recuperador léxico, no semántico. Recall@3 medido: 5 de 8 "
-               "consultas. Falla en las que exigen entender el significado, no "
-               "emparejar palabras.",
-               "Titan real. Se espera que suba sin tocar código de aplicación."],
-              ["Moderación por listas",
-               "Detecta lo evidente; no es un clasificador.",
-               "Bedrock Guardrails como segunda capa."],
+              ["Calidad del sustituto de representaciones vectoriales",
+               "Opera como recuperador léxico y no semántico. Recall@3 medido: 5 de 8 "
+               "consultas. Presenta fallos en aquellas que exigen comprensión del "
+               "significado y no coincidencia de términos.",
+               "Amazon Titan en modo real. Cabe esperar una mejora sin modificación "
+               "del código de aplicación."],
+              ["Moderación mediante listas",
+               "Detecta las infracciones evidentes; no constituye un clasificador.",
+               "Amazon Bedrock Guardrails como segunda capa."],
               ["Autorización sin autenticación",
-               "El selector de usuario simula una sesión iniciada. No hay contraseñas "
-               "ni verificación de identidad.",
-               "Amazon Cognito o el SSO corporativo. El módulo de permisos ya está "
-               "separado y no habría que reescribirlo."],
-              ["Persistencia de sesión",
-               "Galería e historial viven en memoria y se pierden al reiniciar.",
-               "DynamoDB para el historial y S3 para las imágenes, con cifrado KMS."],
-              ["Concurrencia real",
-               "La colaboración es multiusuario en el modelo de roles, pero un solo "
-               "proceso de Streamlit.",
-               "Backend con estado compartido y bloqueo optimista por versión."],
+               "El selector de usuario simula una sesión iniciada. No existen "
+               "contraseñas ni verificación de identidad.",
+               "Amazon Cognito o el sistema de identidad corporativo. El módulo de "
+               "permisos se encuentra ya desacoplado y no requeriría reescritura."],
+              ["Ausencia de persistencia",
+               "La galería y el historial residen en memoria y se pierden al "
+               "reiniciar.",
+               "DynamoDB para el historial y S3 para las imágenes, con cifrado "
+               "mediante KMS."],
+              ["Concurrencia efectiva",
+               "La colaboración es multiusuario en el modelo de roles, si bien opera "
+               "sobre un único proceso de Streamlit.",
+               "Servidor con estado compartido y bloqueo optimista por versión."],
           ],
           anchos=[4.0, 6.6, 5.4])
 
@@ -1029,21 +1138,28 @@ def seccion_5(doc):
 def seccion_6(doc):
     doc.add_heading("6. Autoevaluación frente a la guía", level=1)
 
+    parrafo(doc,
+            "Se contrasta a continuación la entrega con los puntos de verificación "
+            "establecidos en la guía del trabajo práctico.")
+
     filas = [
-        ["Problema e historias de usuario (diseñador, redactor, aprobador)", "Sí", "3.1"],
+        ["Definición del problema e historias de usuario", "Sí", "3.1"],
         ["Diagrama con interfaz, wrapper, Bedrock y almacenamiento", "Sí", "3.2"],
-        ["Justificación de API gestionada frente a open source propio", "Sí", "3.2"],
-        ["Modelo y parámetros por tarea, con su porqué", "Sí", "3.3"],
-        ["System prompt con los cuatro pilares", "Sí", "3.4"],
-        ["Uso justificado —y no confundido— de RAG y memoria", "Sí", "3.5"],
+        ["Justificación de API gestionada frente a despliegue propio", "Sí", "3.2"],
+        ["Modelo y parámetros por tarea, debidamente justificados", "Sí", "3.3"],
+        ["Instrucciones de sistema con los cuatro pilares", "Sí", "3.4"],
+        ["Uso justificado y diferenciado de RAG y memoria", "Sí", "3.5"],
         ["Moderación, inyección de prompt, sesgo, privacidad y copyright", "Sí", "3.6"],
-        ["La app genera imagen y mejora texto llamando a Bedrock", "Sí · simulado", "4"],
-        ["Código con README que explica cómo ejecutarlo", "Sí", "README.md"],
-        ["Demostración con capturas comentadas", "Guion preparado", "docs/GUION_DEMO.md"],
-        ["Fuentes citadas", "Sí", "7"],
+        ["Generación de imagen y mejora de texto mediante Bedrock",
+         "Sí · modo simulado", "4"],
+        ["Código acompañado de README con instrucciones de ejecución", "Sí",
+         "README.md"],
+        ["Demostración mediante capturas comentadas", "Plantilla preparada",
+         "docs/Plantilla_Capturas_Demo.docx"],
+        ["Citación de fuentes y herramientas", "Sí", "7"],
     ]
-    tabla(doc, ["Punto de la guía", "Cumplido", "Sección"], filas,
-          anchos=[10.6, 3.0, 2.4])
+    tabla(doc, ["Punto de verificación", "Estado", "Apartado"], filas,
+          anchos=[10.6, 3.4, 2.0])
 
 
 def seccion_7(doc):
@@ -1051,31 +1167,34 @@ def seccion_7(doc):
 
     parrafo(doc, "Documentación oficial consultada:", negrita=True)
     for fuente in [
-        "Amazon Bedrock — Guía del usuario y referencia de la API de inferencia "
-        "(estructura de invoke_model, formatos de petición y respuesta por proveedor).",
-        "Anthropic Claude en Amazon Bedrock — parámetros de inferencia y formato de la "
-        "Messages API (anthropic_version, system, messages, temperature, top_p).",
-        "Stability AI Stable Diffusion XL en Bedrock — contrato de text_prompts, "
-        "cfg_scale, steps, seed y style_preset.",
-        "Amazon Titan Embeddings — parámetros inputText, dimensions y normalize.",
-        "Amazon Bedrock Guardrails — políticas de contenido y detección de información "
-        "personal (citado como trabajo futuro, no implementado).",
-        "Documentación de Streamlit — gestión del estado de sesión y ciclo de "
-        "reejecución.",
+        "Amazon Bedrock — Guía del usuario y referencia de la API de inferencia: "
+        "estructura de la operación invoke_model y formatos de petición y respuesta "
+        "por proveedor.",
+        "Anthropic Claude en Amazon Bedrock — Parámetros de inferencia y formato de la "
+        "Messages API: anthropic_version, system, messages, temperature y top_p.",
+        "Stability AI Stable Diffusion XL en Amazon Bedrock — Contrato de los campos "
+        "text_prompts, cfg_scale, steps, seed y style_preset.",
+        "Amazon Titan Embeddings — Parámetros inputText, dimensions y normalize.",
+        "Amazon Bedrock Guardrails — Políticas de contenido y detección de información "
+        "personal. Se cita como trabajo futuro; no se ha implementado en esta entrega.",
+        "Documentación de Streamlit — Gestión del estado de sesión y ciclo de "
+        "reejecución del script.",
     ]:
         vineta(doc, fuente)
 
     parrafo(doc, "Herramientas empleadas:", negrita=True)
     for herramienta in [
-        "Python 3.14 · Streamlit 1.63 · boto3 · NumPy · Pillow · Matplotlib · python-docx",
-        "Claude Code (Anthropic) como asistente de desarrollo durante la implementación.",
+        "Python 3.14 · Streamlit 1.63 · boto3 · NumPy · Pillow · Matplotlib · "
+        "python-docx",
+        "Claude Code (Anthropic), empleado como asistente de desarrollo durante la "
+        "implementación.",
     ]:
         vineta(doc, herramienta)
 
     parrafo(doc,
-            "Los materiales de la asignatura —enunciado del caso y guía del trabajo "
-            "práctico de la Unidad 3— son la base de los requisitos recogidos en este "
-            "documento.", tamano=10, color=GRIS)
+            "Los materiales de la asignatura —enunciado del caso práctico y guía del "
+            "trabajo práctico de la Unidad 3— constituyen la base de los requisitos "
+            "recogidos en el presente documento.", tamano=10, color=GRIS)
 
 
 # ---------------------------------------------------------------------------
@@ -1100,9 +1219,9 @@ def construir() -> Path:
 
     doc.add_heading("Tronco común", level=1)
     parrafo(doc,
-            "Las seis secciones que la guía exige por igual en ambas vías. Se conserva "
-            "deliberadamente su numeración original (3.1 a 3.6) para que el contraste "
-            "punto por punto con la guía del trabajo sea inmediato.",
+            "Las seis secciones exigidas por igual en ambas vías de entrega. Se "
+            "conserva deliberadamente su numeración original (3.1 a 3.6) con el fin de "
+            "facilitar el contraste punto por punto con la guía del trabajo práctico.",
             cursiva=True, color=GRIS)
 
     seccion_31(doc)

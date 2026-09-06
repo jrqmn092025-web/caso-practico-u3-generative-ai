@@ -7,6 +7,11 @@ Este guion recorre las ocho capturas que demuestran el alcance completo. Para
 cada una tienes qué hacer, qué debe verse y el pie de foto sugerido —que es lo
 que realmente puntúa, porque la guía pide capturas *comentadas*—.
 
+> **Dónde van las capturas.** El documento que se entrega es
+> `Plantilla_Capturas_Demo.docx`, que ya contiene los ocho marcos reservados y
+> los pies de figura redactados en registro académico. Este guion es la hoja de
+> trabajo para obtenerlas.
+
 **Antes de empezar:**
 
 ```bash

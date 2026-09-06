@@ -68,6 +68,42 @@ credenciales) se traducen a mensajes accionables en `src/bedrock/client.py`.
 
 ---
 
+## Despliegue
+
+> **Vercel no puede ejecutar esta aplicación.** No se trata de un fallo de
+> configuración: es una incompatibilidad de fondo. Vercel ejecuta funciones
+> *serverless* (una petición, una respuesta, proceso efímero) y sitios
+> estáticos. Streamlit necesita justo lo contrario: un proceso persistente que
+> mantenga abierto un WebSocket con cada navegador conectado, porque ahí es
+> donde vive el estado de sesión. No existe *runtime* de Streamlit para Vercel,
+> y ningún `vercel.json` lo arregla. Si hay un proyecto de Vercel apuntando a
+> este repositorio, conviene eliminarlo para que no siga acumulando
+> despliegues fallidos en cada `push`.
+
+**La plataforma adecuada es Streamlit Community Cloud**, que es gratuita y está
+hecha exactamente para esto:
+
+1. Entrar en `https://share.streamlit.io` e iniciar sesión con la cuenta de
+   GitHub.
+2. *New app* → seleccionar el repositorio, la rama `main` y el fichero
+   principal `app.py`.
+3. En *Advanced settings*, elegir una versión de Python **3.11 o superior**.
+4. Desplegar.
+
+No hace falta configuración adicional: el `requirements.txt` de la raíz ya
+declara las dependencias y la aplicación arranca en modo simulado por defecto,
+sin requerir credenciales de AWS.
+
+Alternativas válidas si se prefiere otro proveedor: Hugging Face Spaces (con
+SDK *Streamlit*), Render, Railway o Fly.io. Todas ejecutan procesos
+persistentes, que es el requisito real.
+
+> **El despliegue no forma parte de lo exigido.** La guía del trabajo pide el
+> código en un repositorio, un README con instrucciones de ejecución y una
+> demostración. Publicar la aplicación es alcance adicional.
+
+---
+
 ## Qué hace
 
 | Pantalla | Funcionalidad |
@@ -158,6 +194,10 @@ python scripts/generar_diagrama.py
 python scripts/generar_memoria.py
 ```
 
+```bash
+python scripts/generar_plantilla_capturas.py
+```
+
 El diagrama de arquitectura y la memoria en Word se generan desde el código, no
 se mantienen a mano. La tabla de parámetros y el texto del system prompt que
 aparecen en la memoria se leen de `src/bedrock/models.py` y
@@ -187,6 +227,9 @@ La memoria (`docs/`) desarrolla cada una con lo que haría falta para superarla.
 - `docs/Memoria_CasoPractico_U3_Jose_Ruber_Moncayo_Navia.docx` — memoria
   completa: tronco común (3.1–3.6), ejecución de la Vía A, limitaciones y
   autoevaluación.
-- `docs/GUION_DEMO.md` — guion de las ocho capturas de la demostración, con los
-  pies de foto sugeridos.
+- `docs/Plantilla_Capturas_Demo.docx` — anexo de la demostración con los ocho
+  marcos ya reservados para insertar las capturas y los pies de figura
+  redactados. Es el documento que se entrega.
+- `docs/GUION_DEMO.md` — guion de trabajo de las ocho capturas: qué reproducir
+  en pantalla y qué debe resultar visible en cada una.
 - `assets/arquitectura.png` — diagrama de arquitectura.
