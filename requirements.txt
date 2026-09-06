@@ -1,0 +1,9 @@
+# Caso Práctico Unidad 3 - Generative AI (IEP)
+# Aplicación de generación de imágenes y edición de contenido sobre Amazon Bedrock
+
+streamlit>=1.40          # Interfaz web
+boto3>=1.34              # SDK de AWS: cliente bedrock-runtime
+pillow>=10.0             # Composición de imágenes (y backend simulado de Stable Diffusion)
+numpy>=1.26              # Álgebra vectorial para el índice de embeddings (RAG)
+python-docx>=1.1         # Generación del documento del tronco común
+matplotlib>=3.8          # Diagrama de arquitectura

@@ -1,0 +1,18 @@
+.env
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.streamlit/secrets.toml
+data/generated/
+data/index_cache/
+*.log
+.pytest_cache/
+
+# Ficheros de bloqueo temporales de Word/Office
+~$*
+
+# Material docente del IEP: enunciado y guia del trabajo.
+# Se conservan en local, pero no se redistribuyen en el repositorio publico.
+GenAI_Enunciado.docx
+Guia_Trabajo_Practico_U3.docx
