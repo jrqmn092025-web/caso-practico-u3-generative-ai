@@ -16,3 +16,13 @@ data/index_cache/
 # Se conservan en local, pero no se redistribuyen en el repositorio publico.
 GenAI_Enunciado.docx
 Guia_Trabajo_Practico_U3.docx
+
+# Configuracion local de herramientas de desarrollo.
+# No forma parte de la aplicacion: solo describe como arrancar el servidor de
+# desarrollo desde el editor. La aplicacion se ejecuta con
+# `python -m streamlit run app.py` sin necesidad de este directorio.
+.claude/
+
+# Guion de trabajo de las capturas. Su contenido quedo incorporado al anexo
+# docs/Capturas_Aplicacion_Aurora_Studio.docx, que es el documento entregable.
+docs/GUION_DEMO.md

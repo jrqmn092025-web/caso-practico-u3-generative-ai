@@ -158,7 +158,7 @@ src/
     versioning.py             Piezas, versiones y comentarios
   ui/                         Las cuatro pantallas
 data/brand_guide/             Corpus de la guía de estilo (fuente del RAG)
-docs/                         Memoria en Word y guion de la demostración
+docs/                         Documento principal y anexo de capturas
 scripts/                      Generadores del diagrama y de la memoria
 tests/                        Contratos de Bedrock y calibración del RAG
 ```
@@ -171,7 +171,7 @@ tests/                        Contratos de Bedrock y calibración del RAG
 python tests/test_contratos_bedrock.py
 ```
 
-18 pruebas que verifican la forma de las peticiones a los tres modelos, el
+20 pruebas que verifican la forma de las peticiones a los tres modelos, el
 rechazo de payloads inválidos, los controles de seguridad, la separación de
 funciones entre roles y la integridad del historial.
 
@@ -191,15 +191,15 @@ python scripts/generar_diagrama.py
 ```
 
 ```bash
-python scripts/generar_memoria.py
+python scripts/actualizar_nucleo.py
 ```
 
-```bash
-python scripts/generar_plantilla_capturas.py
-```
-
-El diagrama de arquitectura y la memoria en Word se generan desde el código, no
-se mantienen a mano. La tabla de parámetros y el texto del system prompt que
+El diagrama de arquitectura se genera desde el código y puede regenerarse
+cuantas veces haga falta. El documento principal, en cambio, ya ha sido
+revisado a mano: se modifica con `actualizar_nucleo.py`, que edita en el sitio
+y es idempotente. Los generadores originales (`generar_memoria.py` y
+`generar_plantilla_capturas.py`) se conservan por trazabilidad y solo
+sobrescriben con `--forzar`. La tabla de parámetros y el texto del system prompt que
 aparecen en la memoria se leen de `src/bedrock/models.py` y
 `src/prompts/system_prompts.py`, de modo que el documento no puede afirmar algo
 que la aplicación no haga.
@@ -224,12 +224,16 @@ La memoria (`docs/`) desarrolla cada una con lo que haría falta para superarla.
 
 ## Documentación
 
-- `docs/Memoria_CasoPractico_U3_Jose_Ruber_Moncayo_Navia.docx` — memoria
-  completa: tronco común (3.1–3.6), ejecución de la Vía A, limitaciones y
-  autoevaluación.
-- `docs/Plantilla_Capturas_Demo.docx` — anexo de la demostración con los ocho
-  marcos ya reservados para insertar las capturas y los pies de figura
-  redactados. Es el documento que se entrega.
-- `docs/GUION_DEMO.md` — guion de trabajo de las ocho capturas: qué reproducir
-  en pantalla y qué debe resultar visible en cada una.
+- `docs/Nucleo_Aurora_Studio.docx` — documento principal: diseño de la solución
+  (3.1–3.6), ejecución de la Vía A, limitaciones, requisitos para el paso a
+  producción y glosario de términos técnicos.
+- `docs/Capturas_Aplicacion_Aurora_Studio.docx` — anexo de la demostración con
+  las ocho capturas comentadas.
 - `assets/arquitectura.png` — diagrama de arquitectura.
+
+Ambos documentos se generaron inicialmente con los scripts de `scripts/` y
+después se revisaron y ampliaron a mano. Los generadores se conservan por
+trazabilidad, pero **no deben ejecutarse sobre los documentos actuales**: se
+niegan a sobrescribir un fichero existente salvo que se les pase `--forzar`.
+Para modificar el documento principal sin perder lo escrito existe
+`scripts/actualizar_nucleo.py`, que edita en el sitio.

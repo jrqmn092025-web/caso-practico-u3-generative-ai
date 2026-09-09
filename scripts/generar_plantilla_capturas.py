@@ -13,7 +13,8 @@ interior e insertar la imagen desde Word (Insertar > Imágenes), o pegarla
 directamente. Al insertar la imagen debe eliminarse el texto indicativo que el
 marco contiene.
 
-El contenido se corresponde con el recorrido descrito en docs/GUION_DEMO.md.
+El recorrido de capturas que este anexo documenta se definio durante el
+desarrollo y quedo incorporado al propio documento.
 """
 from __future__ import annotations
 
@@ -455,6 +456,24 @@ def capturas_opcionales(doc):
                      tamano=10.5, espacio_despues=6)
 
 
+def _destino_seguro(destino: Path) -> Path:
+    """Impide sobrescribir un documento ya revisado a mano.
+
+    Tras su primera generación, los documentos de docs/ fueron revisados y
+    ampliados manualmente. Regenerarlos descartaría ese trabajo, que no está en
+    el código y no se puede reconstruir. Por eso el script se niega a escribir
+    sobre un fichero existente salvo que se le pase --forzar de forma explícita.
+    """
+    if destino.exists() and "--forzar" not in sys.argv:
+        print(f"AVISO: {destino.name} ya existe y pudo editarse a mano.")
+        print("       Regenerarlo descartaria esos cambios.")
+        print("       Para modificarlo conservando lo escrito: "
+              "python scripts/actualizar_nucleo.py")
+        print("       Para sobrescribir de todos modos, anade --forzar.")
+        raise SystemExit(1)
+    return destino
+
+
 def construir() -> Path:
     doc = Document()
 
@@ -476,7 +495,7 @@ def construir() -> Path:
     capturas_opcionales(doc)
 
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
-    destino = DOCS_DIR / "Plantilla_Capturas_Demo.docx"
+    destino = _destino_seguro(DOCS_DIR / "Capturas_Aplicacion_Aurora_Studio.docx")
     doc.save(destino)
     return destino
 

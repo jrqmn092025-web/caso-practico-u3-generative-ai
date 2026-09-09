@@ -1200,6 +1200,24 @@ def seccion_7(doc):
 # ---------------------------------------------------------------------------
 
 
+def _destino_seguro(destino: Path) -> Path:
+    """Impide sobrescribir un documento ya revisado a mano.
+
+    Tras su primera generación, los documentos de docs/ fueron revisados y
+    ampliados manualmente. Regenerarlos descartaría ese trabajo, que no está en
+    el código y no se puede reconstruir. Por eso el script se niega a escribir
+    sobre un fichero existente salvo que se le pase --forzar de forma explícita.
+    """
+    if destino.exists() and "--forzar" not in sys.argv:
+        print(f"AVISO: {destino.name} ya existe y pudo editarse a mano.")
+        print("       Regenerarlo descartaria esos cambios.")
+        print("       Para modificarlo conservando lo escrito: "
+              "python scripts/actualizar_nucleo.py")
+        print("       Para sobrescribir de todos modos, anade --forzar.")
+        raise SystemExit(1)
+    return destino
+
+
 def construir() -> Path:
     doc = Document()
 
@@ -1242,7 +1260,7 @@ def construir() -> Path:
     seccion_7(doc)
 
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
-    destino = DOCS_DIR / "Memoria_CasoPractico_U3_Jose_Ruber_Moncayo_Navia.docx"
+    destino = _destino_seguro(DOCS_DIR / "Nucleo_Aurora_Studio.docx")
     doc.save(destino)
     return destino
 
