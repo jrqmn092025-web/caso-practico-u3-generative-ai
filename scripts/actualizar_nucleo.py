@@ -1,4 +1,4 @@
-"""Aplica cambios sobre docs/Nucleo_Aurora_Studio.docx conservando lo ya escrito.
+"""Aplica cambios sobre pdfs/Nucleo_Aurora_Studio.docx conservando lo ya escrito.
 
     python scripts/actualizar_nucleo.py
 
@@ -14,6 +14,11 @@ Este script opera en el sentido contrario: abre el documento existente y
 modifica únicamente lo necesario, dejando intacto el resto. Es idempotente —
 puede ejecutarse varias veces sin duplicar contenido— porque comprueba la
 presencia de cada bloque antes de insertarlo.
+
+
+Nota: la carpeta pdfs/ contiene los documentos entregables ya exportados a
+PDF. Sus fuentes en Word se conservan en local pero no se versionan. Este
+script se mantiene por trazabilidad y no forma parte del flujo de entrega.
 """
 from __future__ import annotations
 
@@ -25,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from docx import Document  # noqa: E402
 from docx.shared import Cm, Pt  # noqa: E402
 
-from src.config import DOCS_DIR  # noqa: E402
+from src.config import PDFS_DIR  # noqa: E402
 
 # Se reutilizan los ayudantes de formato del generador original para que los
 # bloques nuevos sean tipográficamente indistinguibles de los existentes.
@@ -41,7 +46,7 @@ from generar_memoria import (  # noqa: E402
     vineta_rica,
 )
 
-DOCUMENTO = DOCS_DIR / "Nucleo_Aurora_Studio.docx"
+DOCUMENTO = PDFS_DIR / "Nucleo_Aurora_Studio.docx"
 
 
 # ---------------------------------------------------------------------------

@@ -15,6 +15,11 @@ marco contiene.
 
 El recorrido de capturas que este anexo documenta se definio durante el
 desarrollo y quedo incorporado al propio documento.
+
+
+Nota: la carpeta pdfs/ contiene los documentos entregables ya exportados a
+PDF. Sus fuentes en Word se conservan en local pero no se versionan. Este
+script se mantiene por trazabilidad y no forma parte del flujo de entrega.
 """
 from __future__ import annotations
 
@@ -30,7 +35,7 @@ from docx.oxml import OxmlElement  # noqa: E402
 from docx.oxml.ns import qn  # noqa: E402
 from docx.shared import Cm, Pt, RGBColor  # noqa: E402
 
-from src.config import DOCS_DIR  # noqa: E402
+from src.config import PDFS_DIR  # noqa: E402
 
 AZUL = RGBColor(0x1B, 0x3A, 0x5C)
 GRIS = RGBColor(0x5A, 0x62, 0x6B)
@@ -459,7 +464,7 @@ def capturas_opcionales(doc):
 def _destino_seguro(destino: Path) -> Path:
     """Impide sobrescribir un documento ya revisado a mano.
 
-    Tras su primera generación, los documentos de docs/ fueron revisados y
+    Tras su primera generación, los documentos entregables fueron revisados y
     ampliados manualmente. Regenerarlos descartaría ese trabajo, que no está en
     el código y no se puede reconstruir. Por eso el script se niega a escribir
     sobre un fichero existente salvo que se le pase --forzar de forma explícita.
@@ -494,8 +499,8 @@ def construir() -> Path:
 
     capturas_opcionales(doc)
 
-    DOCS_DIR.mkdir(parents=True, exist_ok=True)
-    destino = _destino_seguro(DOCS_DIR / "Capturas_Aplicacion_Aurora_Studio.docx")
+    PDFS_DIR.mkdir(parents=True, exist_ok=True)
+    destino = _destino_seguro(PDFS_DIR / "Capturas_Aplicacion_Aurora_Studio.docx")
     doc.save(destino)
     return destino
 

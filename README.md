@@ -158,7 +158,7 @@ src/
     versioning.py             Piezas, versiones y comentarios
   ui/                         Las cuatro pantallas
 data/brand_guide/             Corpus de la guía de estilo (fuente del RAG)
-docs/                         Documento principal y anexo de capturas
+pdfs/                         Documentos de entrega (PDF)
 scripts/                      Generadores del diagrama y de la memoria
 tests/                        Contratos de Bedrock y calibración del RAG
 ```
@@ -216,27 +216,32 @@ que la aplicación no haga.
 - **El estado no persiste.** Galería e historial viven en memoria y se pierden
   al reiniciar.
 
-La memoria (`docs/`) desarrolla cada una con lo que haría falta para superarla.
+El documento principal (`pdfs/`) desarrolla cada una con lo que haría falta
+para superarla.
 
 ---
 
 ## Documentación
 
-- **`docs/Nucleo_Aurora_Studio.pdf`** — documento principal y pieza de entrega:
-  diseño de la solución (3.1–3.6), ejecución de la Vía A, limitaciones,
-  requisitos para el paso a producción, aspectos adicionales integrados,
-  glosario de términos técnicos y fuentes. 29 páginas.
-- **`docs/Capturas_Aplicacion_Aurora_Studio.docx`** — anexo de la demostración
+Los dos documentos de entrega residen en `pdfs/`:
+
+- **`pdfs/Nucleo_Aurora_Studio.pdf`** — documento principal: diseño de la
+  solución (3.1–3.6), ejecución de la Vía A, limitaciones, requisitos para el
+  paso a producción, aspectos adicionales integrados, glosario de términos
+  técnicos y fuentes. 29 páginas.
+- **`pdfs/Capturas_Aplicacion_Aurora_Studio.pdf`** — anexo de la demostración
   con las ocho capturas comentadas de la aplicación en funcionamiento.
-- `assets/arquitectura.png` — diagrama de arquitectura, generado desde código.
+  16 páginas.
+- `assets/arquitectura.png` — diagrama de arquitectura, generado desde código e
+  incorporado al documento principal como Figura 1.
 
-> **Sobre el formato del documento principal.** El entregable es el PDF. Su
-> fuente editable en Word no se versiona, para que no exista ambigüedad sobre
-> cuál es el documento de entrega; permanece en local y en el historial del
-> repositorio, de donde puede recuperarse con
-> `git show 7b7b6b5:docs/Nucleo_Aurora_Studio.docx > Nucleo.docx`.
+> **Por qué solo PDF.** Ambos documentos se entregan exportados. Sus fuentes
+> editables en Word permanecen en local y en el historial del repositorio, pero
+> no se versionan, para que no exista ambigüedad sobre cuál es la pieza de
+> entrega de cada documento. Pueden recuperarse del historial:
+> `git show a63f5e6:docs/Nucleo_Aurora_Studio.docx > Nucleo.docx`.
 
-Ambos documentos se generaron inicialmente con los scripts de `scripts/` y
-después se revisaron y ampliaron a mano. Los generadores se conservan por
-trazabilidad, pero **no deben ejecutarse sobre los documentos actuales**: se
-niegan a sobrescribir un fichero existente salvo que se les pase `--forzar`.
+Ambos se generaron inicialmente con los scripts de `scripts/` y después se
+revisaron y ampliaron a mano. Los generadores se conservan por trazabilidad,
+pero **no forman parte del flujo de entrega**: se niegan a sobrescribir un
+fichero existente salvo que se les pase `--forzar`.

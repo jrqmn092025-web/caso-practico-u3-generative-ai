@@ -25,10 +25,11 @@ Guia_Trabajo_Practico_U3.docx
 .claude/
 
 # Guion de trabajo de las capturas. Su contenido quedo incorporado al anexo
-# docs/Capturas_Aplicacion_Aurora_Studio.docx, que es el documento entregable.
-docs/GUION_DEMO.md
+# de capturas, que es uno de los documentos entregables.
+pdfs/GUION_DEMO.md
 
-# Fuente editable del documento principal. El entregable es el PDF exportado;
-# el .docx se conserva en local y en el historial de git, pero no se versiona
-# para que no exista ambiguedad sobre cual es el documento de entrega.
-docs/Nucleo_Aurora_Studio.docx
+# Fuentes editables en Word de los dos entregables. Lo que se entrega son los
+# PDF exportados; los .docx se conservan en local y en el historial de git,
+# pero no se versionan para que no exista ambiguedad sobre cual es la pieza de
+# entrega de cada documento.
+pdfs/*.docx

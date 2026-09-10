@@ -7,6 +7,11 @@ leen del código fuente en lugar de transcribirse. De este modo el documento no
 puede afirmar un valor de temperatura que la aplicación no aplique: toda
 modificación de `src/bedrock/models.py` se propaga al documento en la siguiente
 generación.
+
+
+Nota: la carpeta pdfs/ contiene los documentos entregables ya exportados a
+PDF. Sus fuentes en Word se conservan en local pero no se versionan. Este
+script se mantiene por trazabilidad y no forma parte del flujo de entrega.
 """
 from __future__ import annotations
 
@@ -28,7 +33,7 @@ from src.bedrock.models import (  # noqa: E402
     TITAN_EMBEDDINGS,
     TextTask,
 )
-from src.config import ASSETS_DIR, DOCS_DIR  # noqa: E402
+from src.config import ASSETS_DIR, PDFS_DIR  # noqa: E402
 from src.prompts.system_prompts import build_system_prompt  # noqa: E402
 
 AZUL = RGBColor(0x1B, 0x3A, 0x5C)
@@ -1155,7 +1160,7 @@ def seccion_6(doc):
         ["Código acompañado de README con instrucciones de ejecución", "Sí",
          "README.md"],
         ["Demostración mediante capturas comentadas", "Plantilla preparada",
-         "docs/Plantilla_Capturas_Demo.docx"],
+         "pdfs/Capturas_Aplicacion_Aurora_Studio.pdf"],
         ["Citación de fuentes y herramientas", "Sí", "7"],
     ]
     tabla(doc, ["Punto de verificación", "Estado", "Apartado"], filas,
@@ -1203,7 +1208,7 @@ def seccion_7(doc):
 def _destino_seguro(destino: Path) -> Path:
     """Impide sobrescribir un documento ya revisado a mano.
 
-    Tras su primera generación, los documentos de docs/ fueron revisados y
+    Tras su primera generación, los documentos entregables fueron revisados y
     ampliados manualmente. Regenerarlos descartaría ese trabajo, que no está en
     el código y no se puede reconstruir. Por eso el script se niega a escribir
     sobre un fichero existente salvo que se le pase --forzar de forma explícita.
@@ -1259,8 +1264,8 @@ def construir() -> Path:
     seccion_6(doc)
     seccion_7(doc)
 
-    DOCS_DIR.mkdir(parents=True, exist_ok=True)
-    destino = _destino_seguro(DOCS_DIR / "Nucleo_Aurora_Studio.docx")
+    PDFS_DIR.mkdir(parents=True, exist_ok=True)
+    destino = _destino_seguro(PDFS_DIR / "Nucleo_Aurora_Studio.docx")
     doc.save(destino)
     return destino
 

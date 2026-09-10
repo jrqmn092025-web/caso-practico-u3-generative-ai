@@ -15,7 +15,7 @@ DATA_DIR = BASE_DIR / "data"
 BRAND_GUIDE_DIR = DATA_DIR / "brand_guide"
 GENERATED_DIR = DATA_DIR / "generated"
 ASSETS_DIR = BASE_DIR / "assets"
-DOCS_DIR = BASE_DIR / "docs"
+PDFS_DIR = BASE_DIR / "pdfs"   # Documentos entregables, en PDF
 
 
 def _load_dotenv() -> None:
