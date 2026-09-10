@@ -9,8 +9,9 @@ data/index_cache/
 *.log
 .pytest_cache/
 
-# Ficheros de bloqueo temporales de Word/Office
+# Ficheros de bloqueo y recuperacion temporales de Word/Office
 ~$*
+~WRL*.tmp
 
 # Material docente del IEP: enunciado y guia del trabajo.
 # Se conservan en local, pero no se redistribuyen en el repositorio publico.
@@ -26,3 +27,8 @@ Guia_Trabajo_Practico_U3.docx
 # Guion de trabajo de las capturas. Su contenido quedo incorporado al anexo
 # docs/Capturas_Aplicacion_Aurora_Studio.docx, que es el documento entregable.
 docs/GUION_DEMO.md
+
+# Fuente editable del documento principal. El entregable es el PDF exportado;
+# el .docx se conserva en local y en el historial de git, pero no se versiona
+# para que no exista ambiguedad sobre cual es el documento de entrega.
+docs/Nucleo_Aurora_Studio.docx

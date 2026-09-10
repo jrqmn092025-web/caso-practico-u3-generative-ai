@@ -190,16 +190,14 @@ de consultas (legítimas y de ruido) y reporta el recall.
 python scripts/generar_diagrama.py
 ```
 
-```bash
-python scripts/actualizar_nucleo.py
-```
-
 El diagrama de arquitectura se genera desde el código y puede regenerarse
-cuantas veces haga falta. El documento principal, en cambio, ya ha sido
-revisado a mano: se modifica con `actualizar_nucleo.py`, que edita en el sitio
-y es idempotente. Los generadores originales (`generar_memoria.py` y
-`generar_plantilla_capturas.py`) se conservan por trazabilidad y solo
-sobrescriben con `--forzar`. La tabla de parámetros y el texto del system prompt que
+cuantas veces haga falta; el documento principal lo incorpora como Figura 1.
+
+El resto de generadores (`generar_memoria.py`, `generar_plantilla_capturas.py`
+y `actualizar_nucleo.py`) se conservan por trazabilidad: documentan cómo se
+produjo la primera versión de cada documento y qué modificaciones se aplicaron
+después. No forman parte del flujo de entrega, dado que los documentos ya
+fueron revisados a mano y el principal se entrega en PDF. La tabla de parámetros y el texto del system prompt que
 aparecen en la memoria se leen de `src/bedrock/models.py` y
 `src/prompts/system_prompts.py`, de modo que el documento no puede afirmar algo
 que la aplicación no haga.
@@ -224,16 +222,21 @@ La memoria (`docs/`) desarrolla cada una con lo que haría falta para superarla.
 
 ## Documentación
 
-- `docs/Nucleo_Aurora_Studio.docx` — documento principal: diseño de la solución
-  (3.1–3.6), ejecución de la Vía A, limitaciones, requisitos para el paso a
-  producción y glosario de términos técnicos.
-- `docs/Capturas_Aplicacion_Aurora_Studio.docx` — anexo de la demostración con
-  las ocho capturas comentadas.
-- `assets/arquitectura.png` — diagrama de arquitectura.
+- **`docs/Nucleo_Aurora_Studio.pdf`** — documento principal y pieza de entrega:
+  diseño de la solución (3.1–3.6), ejecución de la Vía A, limitaciones,
+  requisitos para el paso a producción, aspectos adicionales integrados,
+  glosario de términos técnicos y fuentes. 29 páginas.
+- **`docs/Capturas_Aplicacion_Aurora_Studio.docx`** — anexo de la demostración
+  con las ocho capturas comentadas de la aplicación en funcionamiento.
+- `assets/arquitectura.png` — diagrama de arquitectura, generado desde código.
+
+> **Sobre el formato del documento principal.** El entregable es el PDF. Su
+> fuente editable en Word no se versiona, para que no exista ambigüedad sobre
+> cuál es el documento de entrega; permanece en local y en el historial del
+> repositorio, de donde puede recuperarse con
+> `git show 7b7b6b5:docs/Nucleo_Aurora_Studio.docx > Nucleo.docx`.
 
 Ambos documentos se generaron inicialmente con los scripts de `scripts/` y
 después se revisaron y ampliaron a mano. Los generadores se conservan por
 trazabilidad, pero **no deben ejecutarse sobre los documentos actuales**: se
 niegan a sobrescribir un fichero existente salvo que se les pase `--forzar`.
-Para modificar el documento principal sin perder lo escrito existe
-`scripts/actualizar_nucleo.py`, que edita en el sitio.
